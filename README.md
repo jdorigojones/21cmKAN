@@ -1,2 +1,2 @@
 # 21cmKAN
-21cmKAN - an emulator of the 21-cm global signal based on the Kolmogorov-Arnold Network
+21cmKAN - an emulator of the global 21 cm signal based on the Kolmogorov-Arnold Network
