@@ -17,7 +17,7 @@ history_size = 10  # history size for LBFGS optimizer
 layers_hidden = [8, 80, 20, 449]  # specify KAN architecture 
 
 model_save_path = './21cmkan_model_simple_train.pth'
-data_path = './data'
+data_path = './data/'
 
 # TODO: in the future replace the loading of data with a PyTorch Dataset/DataLoader process 
 # Load training data 
