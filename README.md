@@ -31,7 +31,12 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
 cd efficient-kan
 pip install .
 ```
-6. If you would like to use [Pykan's](https://github.com/KindXiaoming/pykan) LBFGS optimizer, then you will 
+6. To perform Ray Tune Bayesian hyperparameter search, include the following libraries:
+```
+pip install ray[tune]
+pip install optuna
+```
+7. If you would like to use [Pykan's](https://github.com/KindXiaoming/pykan) LBFGS optimizer, then you will 
 need to install it (and some additional dependencies) in your environment: 
 ```
 pip install pykan
