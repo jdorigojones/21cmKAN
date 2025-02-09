@@ -22,3 +22,52 @@ class NumPy2TensorDataset(Dataset):
         targets_tensor = torch.from_numpy(self.targets[idx])
 
         return features_tensor, targets_tensor
+
+def eval_test_set(model, data_path, device):
+
+    torch.set_default_dtype(torch.float64)
+
+    proc_params_test_21cmGEM_np = np.load(data_path + 'proc_params_test_21cmGEM.npy')
+    train_maxs_21cmGEM = np.load(data_path + 'train_maxs_21cmGEM.npy')
+    train_mins_21cmGEM = np.load(data_path + 'train_mins_21cmGEM.npy')
+    signals_21cmGEM_true = np.load(data_path + 'signals_21cmGEM_true.npy')
+
+    proc_params_test_21cmGEM = torch.from_numpy(proc_params_test_21cmGEM_np[:, 0, :]) # drop the frequency channels for the input 
+    proc_params_test_21cmGEM_np = 0 
+    proc_params_test_21cmGEM = proc_params_test_21cmGEM.to(device)
+    
+    model.eval()
+    with torch.no_grad():
+        result_21cmGEM = model(proc_params_test_21cmGEM)
+    result_21cmGEM = result_21cmGEM.cpu().detach().numpy()
+
+    evaluation_test_21cmGEM = result_21cmGEM #.T[0].T # not sure why this transpose is here 
+    unproc_signals_test_21cmGEM = evaluation_test_21cmGEM.copy()
+    unproc_signals_test_21cmGEM = (evaluation_test_21cmGEM*(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1]))+train_mins_21cmGEM[-1] # unpreprocess (i.e., denormalize) signals
+    unproc_signals_test_21cmGEM = unproc_signals_test_21cmGEM[:,::-1] # flip signals to be from high-z to low-z
+    signals_21cmGEM_emulated = unproc_signals_test_21cmGEM.copy()
+
+    # calculate relative error between emulated and true signals in test set
+    err_21cmGEM = np.sqrt(np.mean((signals_21cmGEM_emulated - signals_21cmGEM_true)**2, axis=1)) # absolute error in milliKelvins (mK)
+    err_21cmGEM /= np.max(np.abs(signals_21cmGEM_true), axis=1)
+    err_21cmGEM *= 100 # convert to relative error in per cent (%)
+
+    mean_rel_err = np.mean(err_21cmGEM)
+    median_rel_err = np.median(err_21cmGEM)
+    max_rel_err = np.max(err_21cmGEM)
+
+    return mean_rel_err, median_rel_err, max_rel_err
+
+def create_file_name(config, test_max_rel_err):
+
+    file_name = ""
+    len_config = len(config)
+    for key, value in config.items():
+        if key == "data_path":
+            file_name += "test_max_rel_error_" + str(test_max_rel_err) + ".pth"
+        elif key == "model_save_dir":
+            pass
+        else:
+            file_name += key + "_" + str(value) + "_"
+
+    return file_name
