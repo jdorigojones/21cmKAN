@@ -1,0 +1,12 @@
+jupyter
+h5py
+matplotlib
+numpy
+tensorflow
+efficient-kan
+ray[tune]
+optuna
+pykan
+scikit-learn
+pyyaml
+pandas
