@@ -10,10 +10,10 @@ print("Device: ", device)
 # Set default torch type to float64
 torch.set_default_dtype(torch.float64)
 
-num_epochs = 200
+num_epochs = 400
 history_size = 10  # history size for LBFGS optimizer 
-layers_hidden = [8, 40, 40, 40, 449]  # specify KAN architecture
-batch_size = 500
+layers_hidden = [7, 44, 44, 71, 451]  # specify KAN architecture
+batch_size = 100
 print(f"layers_hidden: {layers_hidden}")
 print(f"batch_size: {batch_size}")
 print(f"num_epochs: {num_epochs}")
@@ -39,7 +39,7 @@ X_val_21cmGEM = X_val_21cmGEM.to(device)
 y_val_21cmGEM = y_val_21cmGEM.to(device)
 
 # initialize model 
-model = KAN(layers_hidden=layers_hidden, grid_size=5, spline_order=3)
+model = KAN(layers_hidden=layers_hidden, grid_size=7, spline_order=3)
 model.to(device)
 
 # Calculate the absolute maximum for each signal's frequency channel value
