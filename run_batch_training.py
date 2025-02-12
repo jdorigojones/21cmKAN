@@ -18,7 +18,7 @@ print(f"layers_hidden: {layers_hidden}")
 print(f"batch_size: {batch_size}")
 print(f"num_epochs: {num_epochs}")
 
-model_save_path = './21cmkan_model.pth'
+model_save_path = './models/21cmkan_model.pth'
 data_path = './data/'
 
 # Create training and validation Datasets 
