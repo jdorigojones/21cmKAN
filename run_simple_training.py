@@ -29,9 +29,9 @@ X_val_21cmGEM_np = np.load(data_path + 'X_val_21cmGEM.npy')
 y_val_21cmGEM_np = np.load(data_path + 'y_val_21cmGEM.npy')
 
 # Convert to tensors 
-X_train_21cmGEM = torch.from_numpy(X_train_21cmGEM_np[:, 0, :]).to(device) # drop the frequency channels for the input 
+X_train_21cmGEM = torch.from_numpy(X_train_21cmGEM_np).to(device)
 y_train_21cmGEM = torch.from_numpy(y_train_21cmGEM_np).to(device)
-X_val_21cmGEM = torch.from_numpy(X_val_21cmGEM_np[:, 0, :]).to(device) # drop the frequency channels for the input 
+X_val_21cmGEM = torch.from_numpy(X_val_21cmGEM_np).to(device) 
 y_val_21cmGEM = torch.from_numpy(y_val_21cmGEM_np).to(device)
 
 # free numpy array memory 
@@ -41,7 +41,7 @@ X_val_21cmGEM_np = 0
 y_val_21cmGEM_np = 0
 
 # Initialize model 
-model = KAN(layers_hidden=layers_hidden, grid_size=5, spline_order=3)
+model = KAN(layers_hidden=layers_hidden, grid_size=7, spline_order=3)
 model.to(device)
 
 # Specifies if the log is visible during training 
