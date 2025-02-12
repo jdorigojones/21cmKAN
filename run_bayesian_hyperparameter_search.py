@@ -35,7 +35,7 @@ def train_model(config):
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=config["batch_size"], shuffle=True)
 
     # Initialize model with given configurations 
-    model = KAN(layers_hidden=[8, config["layer1"], config["layer2"], config["layer3"], 449], grid_size=config["grid_size"], spline_order=config["spline_order"])
+    model = KAN(layers_hidden=[7, config["layer1"], config["layer2"], config["layer3"], 451], grid_size=config["grid_size"], spline_order=config["spline_order"])
     model.to(device)
 
     # Define optimizer 
