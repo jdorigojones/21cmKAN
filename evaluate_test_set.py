@@ -11,7 +11,7 @@ torch.set_default_dtype(torch.float64)
 data_path = './data/'
 
 # Load in training data and data needed to transform the output of the model
-proc_params_test_21cmGEM_np = np.load(data_path + 'proc_params_test_21cmGEM.npy')
+proc_params_test_21cmGEM_np = np.load(data_path + 'X_test_21cmGEM.npy')
 train_maxs_21cmGEM = np.load(data_path + 'train_maxs_21cmGEM.npy')
 train_mins_21cmGEM = np.load(data_path + 'train_mins_21cmGEM.npy')
 signals_21cmGEM_true = np.load(data_path + 'signals_21cmGEM_true.npy')
