@@ -5,8 +5,7 @@ from torch.utils.data import Dataset
 class NumPy2TensorDataset(Dataset):
     def __init__(self, features_npy_file, targets_npy_file):
         # Load full numpy array into memory. TODO: could put all data in 1 npy file 
-        self.features = np.load(features_npy_file)  
-        self.features = self.features[:, 0, :] # drop the frequency channels for the input. TODO: modify data so this is not necessary 
+        self.features = np.load(features_npy_file)
         self.targets = np.load(targets_npy_file)  
         
     def __len__(self):
