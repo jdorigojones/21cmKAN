@@ -26,12 +26,12 @@ def eval_test_set(model, data_path, device):
 
     torch.set_default_dtype(torch.float64)
 
-    proc_params_test_21cmGEM_np = np.load(data_path + 'proc_params_test_21cmGEM.npy')
+    proc_params_test_21cmGEM_np = np.load(data_path + 'X_test_21cmGEM.npy')
     train_maxs_21cmGEM = np.load(data_path + 'train_maxs_21cmGEM.npy')
     train_mins_21cmGEM = np.load(data_path + 'train_mins_21cmGEM.npy')
     signals_21cmGEM_true = np.load(data_path + 'signals_21cmGEM_true.npy')
 
-    proc_params_test_21cmGEM = torch.from_numpy(proc_params_test_21cmGEM_np[:, 0, :]) # drop the frequency channels for the input 
+    proc_params_test_21cmGEM = torch.from_numpy(proc_params_test_21cmGEM_np)
     proc_params_test_21cmGEM_np = 0 
     proc_params_test_21cmGEM = proc_params_test_21cmGEM.to(device)
     
