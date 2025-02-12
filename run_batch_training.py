@@ -12,7 +12,7 @@ torch.set_default_dtype(torch.float64)
 
 num_epochs = 400
 history_size = 10  # history size for LBFGS optimizer 
-layers_hidden = [7, 44, 44, 71, 451]  # specify KAN architecture
+layers_hidden = [7, 44, 44, 71, 449]  # specify KAN architecture
 batch_size = 100
 print(f"layers_hidden: {layers_hidden}")
 print(f"batch_size: {batch_size}")
