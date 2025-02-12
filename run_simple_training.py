@@ -14,7 +14,7 @@ torch.set_default_dtype(torch.float64)
 
 steps = 10  # number of steps for training 
 history_size = 10  # history size for LBFGS optimizer 
-layers_hidden = [7, 80, 20, 451]  # specify KAN architecture 
+layers_hidden = [7, 44, 44, 71, 451]  # specify KAN architecture 
 
 model_save_path = './21cmkan_model_simple_train.pth'
 data_path = './data/'
