@@ -85,8 +85,8 @@ secax.set_xticks([5, 10, 15, 20, 30, 50])
 secax.set_xticklabels(['5', '10', '15', '20', '30', '50'], fontsize=15)
 i=0
 for i in range(np.shape(proc_params_test_21cmGEM)[0]):
-    ax.plot(nu_list[::-1], signals_21cmGEM_emulated[i], color='r', alpha=0.1)
-    ax.plot(nu_list[::-1], signals_21cmGEM_true[i], linestyle='dashed', color='k', alpha=0.1)
+    ax.plot(nu_list[::-1], signals_21cmGEM_emulated[i][::-1], color='r', alpha=0.1)
+    ax.plot(nu_list[::-1], signals_21cmGEM_true[i][::-1], linestyle='dashed', color='k', alpha=0.1)
 ax.set_ylim(-300,50)
 ax.set_xlim(27.85,236.74)
 plt.savefig('21cmKAN_21cmGEM_test_realizations_A100_trialx.png', dpi = 300, bbox_inches='tight', facecolor='w')
