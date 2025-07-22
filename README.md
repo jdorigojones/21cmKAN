@@ -45,3 +45,11 @@ pip install pyyaml
 pip install matplotlib
 pip install pandas 
 ```
+
+8. Install 21cmKAN
+
+```
+git clone https://github.com/jdorigojones/21cmKAN
+cd 21cmKAN
+python -m pip install .
+```
