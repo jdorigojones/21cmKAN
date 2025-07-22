@@ -20,7 +20,7 @@ class evaluate():
             if key not in set(['model_dir', 'model']):
                 raise KeyError("Unexpected keyword argument in evaluate()")
                 
-        self.model_dir = kwargs.pop('model_dir', '/projects/jodo2960/KAN/21cmKAN/models/')
+        self.model_dir = kwargs.pop('model_dir', f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/")
         if type(self.model_dir) is not str:
             raise TypeError("'model_dir' must be a sting.")
         elif self.model_dir.endswith('/') is False:
