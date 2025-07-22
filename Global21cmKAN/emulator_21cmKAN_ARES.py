@@ -25,8 +25,10 @@ print(f"layers_hidden: {layers_hidden}")
 print(f"batch_size: {batch_size}")
 print(f"num_epochs: {num_epochs}")
 
-model_save_path = '/projects/jodo2960/KAN/21cmKAN/models/21cmkan_model_ARES_default_17.pth'
-data_path = '/projects/jodo2960/KAN/21cmKAN/data/'
+model_save_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/21cmkan_model_ARES_default_17.pth"
+data_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/data/"
+#model_save_path = '/projects/jodo2960/KAN/21cmKAN/models/21cmkan_model_ARES_default_17.pth'
+#data_path = '/projects/jodo2960/KAN/21cmKAN/data/'
 
 # Create training and validation Datasets 
 train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_ARES.npy', 
