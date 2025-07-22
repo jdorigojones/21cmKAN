@@ -26,8 +26,8 @@ class evaluate():
         elif self.model_dir.endswith('/') is False:
             raise KeyError("'model_dir' must end with '/'.")
         
-        self.train_mins = np.load('/projects/jodo2960/KAN/21cmKAN/data/train_mins_21cmGEM.npy')
-        self.train_maxs = np.load('/projects/jodo2960/KAN/21cmKAN/data/train_maxs_21cmGEM.npy')
+        self.train_mins = np.load(f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/data/train_mins_21cmGEM.npy")
+        self.train_maxs = np.load(f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/data/train_maxs_21cmGEM.npy")
         
         self.model = kwargs.pop('model', None)
         if self.model is None:
