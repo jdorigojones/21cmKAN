@@ -22,7 +22,7 @@ print(f"batch_size: {batch_size}")
 print(f"num_epochs: {num_epochs}")
 
 #PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/Global21cmKAN/"
-PATH = "/projects/jodo2960/KAN/Global21cmKAN/"
+PATH = "/projects/jodo2960/KAN/21cmKAN/"
 model_save_path = PATH+"models/emulator_21cmGEM.pth"
 data_path = PATH+"data/"
 
