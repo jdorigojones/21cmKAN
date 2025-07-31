@@ -46,8 +46,8 @@ setup(
 # package is used. 
 BASE_PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
 MODELS_INSTALL_PATH = os.path.dirname(os.path.realpath(__file__))+'/Global21cmKAN/models/'
-emulator_files_list = ['emulator_21cmGEM.h5', 'emulator_ARES.h5', 'train_maxs_21cmGEM.txt',\
-                       'train_mins_21cmGEM.txt', 'train_maxs_ARES.txt', 'train_mins_ARES.txt']
+emulator_files_list = ['emulator_21cmGEM.pth', 'emulator_ARES.pth', 'train_maxs_21cmGEM.npy',\
+                       'train_mins_21cmGEM.npy', 'train_maxs_ARES.npy', 'train_mins_ARES.npy']
 
 if not os.path.exists(BASE_PATH):
    os.makedirs(BASE_PATH)
