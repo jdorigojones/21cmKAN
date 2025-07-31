@@ -20,7 +20,7 @@ def readme(short=False):
 setup(
     name='21cmKAN',
     version='1.0.0',
-    description='21cmKAN: An emulator of the global 21 cm signal based on the Kolmogorov-Arnold Network',
+    description='21cmKAN: A Fast, Accurate, and Transparent Emulator of the Global 21 cm Signal Based on the Kolmogorov-Arnold Network',
     long_description=readme(),
     author='Johnny Dorigo Jones',
     author_email='johnny.dorigojones@colorado.edu',
@@ -46,7 +46,8 @@ setup(
 # package is used. 
 BASE_PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
 MODELS_INSTALL_PATH = os.path.dirname(os.path.realpath(__file__))+'/Global21cmKAN/models/'
-emulator_files_list = ['train_maxs_21cmGEM.txt', 'train_mins_21cmGEM.txt', 'train_maxs_ARES.txt', 'train_mins_ARES.txt']
+emulator_files_list = ['emulator_21cmGEM.h5', 'emulator_ARES.h5', 'train_maxs_21cmGEM.txt',\
+                       'train_mins_21cmGEM.txt', 'train_maxs_ARES.txt', 'train_mins_ARES.txt']
 
 if not os.path.exists(BASE_PATH):
    os.makedirs(BASE_PATH)
@@ -55,13 +56,13 @@ if not os.path.exists(BASE_PATH+'models/'):
    os.makedirs(BASE_PATH+'models/')
 
 if not Path(BASE_PATH + 'dataset_21cmGEM.h5').exists():
-    print('Downloading data set for 21cmGEM (Cohen et al. 2020) used in Dorigo Jones et al. 2024 and also Bye et al. 2022 and Bevins et al. 2021.')
+    print('Downloading data set for 21cmGEM (Cohen et al. 2020) used in Dorigo Jones et al. 2025, Dorigo Jones et al. 2024, Bye et al. 2022, and Bevins et al. 2021.')
     r1 = requests.get('https://zenodo.org/record/5084114/files/dataset_21cmVAE.h5?download=1')
     with open(BASE_PATH + 'dataset_21cmGEM.h5', 'wb') as f1:
         f1.write(r1.content)
 
 if not Path(BASE_PATH + 'dataset_ARES.h5').exists():
-    print('Downloading data set for ARES used and generated in Dorigo Jones et al. 2024.')
+    print('Downloading data set for ARES used and generated in Dorigo Jones et al. 2024 and also used in Dorigo Jones et al. 2025.')
     r2 = requests.get('https://zenodo.org/record/13840725/files/dataset_ARES.h5?download=1')
     with open(BASE_PATH + 'dataset_ARES.h5', 'wb') as f2:
         f2.write(r2.content)
