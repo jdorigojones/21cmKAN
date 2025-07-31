@@ -24,8 +24,6 @@ print(f"num_epochs: {num_epochs}")
 PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
 model_save_path = PATH+"models/emulator_21cmGEM.pth"
 data_path = PATH+"/data/"
-#model_save_path = '/projects/jodo2960/KAN/21cmKAN/models/21cmKAN_model_21cmGEM_default2_11.pth'
-#data_path = '/projects/jodo2960/KAN/21cmKAN/data/'
 
 # Create training and validation Datasets 
 train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_21cmGEM.npy', 
