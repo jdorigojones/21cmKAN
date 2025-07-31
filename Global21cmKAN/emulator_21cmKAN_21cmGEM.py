@@ -21,9 +21,9 @@ print(f"layers_hidden: {layers_hidden}")
 print(f"batch_size: {batch_size}")
 print(f"num_epochs: {num_epochs}")
 
-PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
+PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/Global21cmKAN/"
 model_save_path = PATH+"models/emulator_21cmGEM.pth"
-data_path = PATH+"/data/"
+data_path = PATH+"data/"
 
 # Create training and validation Datasets 
 train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_21cmGEM.npy', 
