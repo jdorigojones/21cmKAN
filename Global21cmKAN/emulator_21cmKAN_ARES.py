@@ -1,15 +1,11 @@
 import h5py
-#import tensorflow as tf
 import numpy as np
 import os
-#from Global21cmKAN import __path__
-#import Global21cmKAN.preprocess_21cmKAN_ARES as pp
-
-from efficient_kan import KAN
 import torch 
 import torch.optim as optim
-import numpy as np 
+from efficient_kan import KAN
 from utils import NumPy2TensorDataset
+from Global21cmKAN import __path__
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print("Device: ", device)
@@ -25,10 +21,9 @@ print(f"layers_hidden: {layers_hidden}")
 print(f"batch_size: {batch_size}")
 print(f"num_epochs: {num_epochs}")
 
-model_save_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/21cmkan_model_ARES_default_17.pth"
-data_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/data/"
-#model_save_path = '/projects/jodo2960/KAN/21cmKAN/models/21cmkan_model_ARES_default_17.pth'
-#data_path = '/projects/jodo2960/KAN/21cmKAN/data/'
+PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
+model_save_path = PATH+"models/emulator_ARES.pth"
+data_path = PATH+"/data/"
 
 # Create training and validation Datasets 
 train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_ARES.npy', 
@@ -193,7 +188,6 @@ class Emulate:
         signal_train=y_train_ARES,
         signal_val=y_val_ARES,
         signal_test=y_test_ARES_true,
-        activation_func='tanh',
         redshifts=z_list,
         frequencies=None):
         """
@@ -214,8 +208,6 @@ class Emulate:
             Signals in validation set
         signal_test : np.ndarray
             Signals in test set
-        activation_func: str or instance of tf.keras.activations
-            Activation function for LSTM cells. Default : tanh
         redshifts : np.ndarray or None
             Array of redshifts corresponding to each signal
         frequencies : np.ndarray or None
