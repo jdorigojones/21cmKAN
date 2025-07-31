@@ -80,8 +80,6 @@ def model(layers_hidden, name=None):
         Number of physical parameters plus one for the frequency step (e.g., 8 for 21cmGEM set; 9 for ARES set)
     dim_output : int
         Dimensionality of the fully-connected output layer of the model
-    activation_func: str or instance of tf.keras.activations
-        Activation function for LSTM cells. Default : tanh
     name : str or None
         Name of the model. Default : None
 
@@ -192,7 +190,6 @@ class Emulate:
         signal_train=y_train_21cmGEM,
         signal_val=y_val_21cmGEM,
         signal_test=y_test_21cmGEM_true,
-        activation_func='tanh',
         redshifts=z_list,
         frequencies=None):
         """
@@ -213,8 +210,6 @@ class Emulate:
             Signals in validation set
         signal_test : np.ndarray
             Signals in test set
-        activation_func: str or instance of tf.keras.activations
-            Activation function for LSTM cells. Default : tanh
         redshifts : np.ndarray or None
             Array of redshifts corresponding to each signal
         frequencies : np.ndarray or None
