@@ -1,10 +1,7 @@
 import h5py
-#import tensorflow as tf
 import numpy as np
 import os
-#from Global21cmKAN import __path__
-#import Global21cmKAN.preprocess_21cmKAN_21cmGEM as pp
-
+from Global21cmKAN import __path__
 from efficient_kan import KAN
 import torch 
 import torch.optim as optim
@@ -25,8 +22,9 @@ print(f"layers_hidden: {layers_hidden}")
 print(f"batch_size: {batch_size}")
 print(f"num_epochs: {num_epochs}")
 
-model_save_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/21cmKAN_model_21cmGEM_default2_11.pth"
-data_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/data/"
+PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
+model_save_path = PATH+"models/emulator_21cmGEM.pth"
+data_path = PATH+"/data/"
 #model_save_path = '/projects/jodo2960/KAN/21cmKAN/models/21cmKAN_model_21cmGEM_default2_11.pth'
 #data_path = '/projects/jodo2960/KAN/21cmKAN/data/'
 
