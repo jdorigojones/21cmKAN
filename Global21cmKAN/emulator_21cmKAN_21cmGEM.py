@@ -1,12 +1,11 @@
 import h5py
 import numpy as np
 import os
-from Global21cmKAN import __path__
-from efficient_kan import KAN
 import torch 
 import torch.optim as optim
-import numpy as np 
+from efficient_kan import KAN
 from utils import NumPy2TensorDataset
+from Global21cmKAN import __path__
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print("Device: ", device)
