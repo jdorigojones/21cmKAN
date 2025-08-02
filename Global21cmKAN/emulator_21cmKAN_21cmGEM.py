@@ -26,6 +26,18 @@ PATH = "/projects/jodo2960/KAN/21cmKAN/"
 model_save_path = PATH+"models/emulator_21cmGEM.pth"
 data_path = PATH+"data/"
 
+z_list = np.linspace(5, 50, 451) # list of redshifts for 21cmGEM signals; equiv to np.arange(5, 50.1, 0.1)
+vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
+with h5py.File(PATH + 'dataset_21cmGEM.h5', "r") as f:
+    print("Keys: %s" % f.keys())
+    par_train = np.asarray(f['par_train'])[()]
+    par_val = np.asarray(f['par_val'])[()]
+    par_test = np.asarray(f['par_test'])[()]
+    signal_train = np.asarray(f['signal_train'])[()]
+    signal_val = np.asarray(f['signal_val'])[()]
+    signal_test = np.asarray(f['signal_test'])[()]
+f.close()
+
 # Create training and validation Datasets 
 train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_21cmGEM.npy', 
                                     targets_npy_file=data_path + 'y_train_21cmGEM.npy')
@@ -56,20 +68,6 @@ y_test_21cmGEM_true = np.load(data_path + 'signals_21cmGEM_true.npy')
 
 # Calculate the absolute maximum for each signal's frequency channel value
 max_abs = torch.abs(y_val_21cmGEM).min(dim=1)[0]
-
-
-#PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmLSTM/"
-z_list = np.linspace(5, 50, 451) # list of redshifts for 21cmGEM signals; equiv to np.arange(5, 50.1, 0.1)
-vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
-#with h5py.File(PATH + 'dataset_21cmGEM.h5', "r") as f:
-#    print("Keys: %s" % f.keys())
-#    par_train = np.asarray(f['par_train'])[()]
-#    par_val = np.asarray(f['par_val'])[()]
-#    par_test = np.asarray(f['par_test'])[()]
-#    signal_train = np.asarray(f['signal_train'])[()]
-#    signal_val = np.asarray(f['signal_val'])[()]
-#    signal_test = np.asarray(f['signal_test'])[()]
-#f.close()
 
 def model(layers_hidden, name=None):
     """
