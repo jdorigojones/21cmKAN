@@ -334,7 +334,7 @@ class Emulate:
 
         self.par_labels = [r'$f_*$', r'$V_c$', r'$f_X$', r'$\tau$', r'$\alpha$', r'$\nu_{\rm min}$', r'$R_{\rm mfp}$']
 
-        self.emulator = model(layers_hidden, grid_size, spline_order, name="emulator_21cmGEM")
+        self.emulator = model(layer_nodes, grid_size, spline_order, name="emulator_21cmGEM")
 
         self.train_mins = train_mins_21cmGEM
         self.train_maxs = train_maxs_21cmGEM
