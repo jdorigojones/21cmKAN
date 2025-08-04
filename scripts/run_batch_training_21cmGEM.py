@@ -99,7 +99,7 @@ X_val_21cmGEM = X_val_21cmGEM.to(device)
 
 # preprocess/normalize signals (dT_b) in training and validaton sets
 proc_signals_train = signal_train.copy()
-proc_signals_train = (signal_train - train_mins[-1])/(train_maxs[-1]-train_mins[-1])  # global Min-Max normalization
+proc_signals_train = (signal_train - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])  # global Min-Max normalization
 proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
 y_train_21cmGEM = torch.from_numpy(proc_signals_train)
 proc_signals_train = 0
@@ -107,7 +107,7 @@ signal_train = 0
 y_train_21cmGEM = y_train_21cmGEM.to(device)
 
 proc_signals_val = signal_val.copy()
-proc_signals_val = (signal_val - train_mins[-1])/(train_maxs[-1]-train_mins[-1])  # global Min-Max normalization
+proc_signals_val = (signal_val - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])  # global Min-Max normalization
 proc_signals_val = proc_signals_val[:,::-1] # flip signals to be from high-z to low-z
 y_val_21cmGEM = torch.from_numpy(proc_signals_val)
 proc_signals_val = 0
