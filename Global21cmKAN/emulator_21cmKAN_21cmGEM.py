@@ -24,32 +24,24 @@ print(f"num_epochs: {num_epochs}")
 
 PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
 model_save_path = PATH+"models/emulator_21cmGEM.pth"
-#PATH = "/projects/jodo2960/KAN/21cmKAN/"
-#data_path = PATH+"data/"
 
 z_list = np.linspace(5, 50, 451) # list of redshifts for 21cmGEM signals; equiv to np.arange(5, 50.1, 0.1)
 vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
+# Load in unnormalized training, validation, and test data and data needed to transform the output of the model
 with h5py.File(PATH + 'dataset_21cmGEM.h5', "r") as f:
     print("Keys: %s" % f.keys())
     par_train = np.asarray(f['par_train'])[()]
     par_val = np.asarray(f['par_val'])[()]
-    par_test = np.asarray(f['par_test'])[()]
+    X_test_21cmGEM_true = np.asarray(f['par_test'])[()]
     signal_train = np.asarray(f['signal_train'])[()]
     signal_val = np.asarray(f['signal_val'])[()]
-    signal_test = np.asarray(f['signal_test'])[()]
+    y_test_21cmGEM_true = np.asarray(f['signal_test'])[()]
 f.close()
 
-# Load in unnormalized test data and data needed to transform the output of the model
 train_mins_21cmGEM = np.load(PATH+"models/train_mins_21cmGEM.npy")
 train_maxs_21cmGEM = np.load(PATH+"models/train_maxs_21cmGEM.npy")
-X_test_21cmGEM_true = par_test
-y_test_21cmGEM_true = signal_test
-#train_maxs_21cmGEM = np.load(data_path + 'train_maxs_21cmGEM.npy')
-#train_mins_21cmGEM = np.load(data_path + 'train_mins_21cmGEM.npy')
-#X_test_21cmGEM_true = np.load(data_path + 'X_test_true_21cmGEM.npy')
-#y_test_21cmGEM_true = np.load(data_path + 'signals_21cmGEM_true.npy')
 
-# preprocess input physical parameters for training and validation sets
+# preprocess/normalize input physical parameters values of training and validation sets
 unproc_f_s_train = par_train[:,0].copy() # f_*, star formation efficiency
 unproc_V_c_train = par_train[:,1].copy() # V_c, minimum circular velocity of star-forming halos 
 unproc_f_X_train = par_train[:,2].copy() # f_X, X-ray efficiency of sources
@@ -75,7 +67,7 @@ parameters_log_val[:,0] = unproc_f_s_val
 parameters_log_val[:,1] = unproc_V_c_val
 parameters_log_val[:,2] = unproc_f_X_val
 parameters_log_val[:,3:] = par_val[:,3:].copy()
-        
+
 N_proc_train = np.shape(parameters_log_train)[0] # number of signals (i.e., parameter sets) to process
 p_train = np.shape(par_train)[1] # number of input parameters (# of physical params)
 proc_params_train = np.zeros((N_proc_train,p))
@@ -102,9 +94,10 @@ proc_params_val = 0
 par_val = 0
 X_val_21cmGEM = X_val_21cmGEM.to(device)
 
+# preprocess/normalize signals (dT_b) of training and validaton sets
 proc_signals_train = signal_train.copy()
 proc_signals_train = (signal_train - train_mins[-1])/(train_maxs[-1]-train_mins[-1])  # global Min-Max normalization
-proc_signals_train = proc_signals_train[:,::-1]
+proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
 y_train_21cmGEM = torch.from_numpy(proc_signals_train)
 proc_signals_train = 0
 signal_train = 0
@@ -112,36 +105,38 @@ y_train_21cmGEM = y_train_21cmGEM.to(device)
 
 proc_signals_val = signal_val.copy()
 proc_signals_val = (signal_val - train_mins[-1])/(train_maxs[-1]-train_mins[-1])  # global Min-Max normalization
-proc_signals_val = proc_signals_val[:,::-1]
+proc_signals_val = proc_signals_val[:,::-1] # flip signals to be from high-z to low-z
 y_val_21cmGEM = torch.from_numpy(proc_signals_val)
 proc_signals_val = 0
 signal_val = 0
 y_val_21cmGEM = y_val_21cmGEM.to(device)
 
-# Calculate the absolute maximum for each signal's frequency channel value
-max_abs = torch.abs(y_val_21cmGEM).min(dim=1)[0]
-
+# Calculate the absolute minimum value of each normalized validation set signal, used to compute relative error
+min_abs = torch.abs(y_val_21cmGEM).min(dim=1)[0]
 
 # Create normalized training and validation Datasets 
 train_dataset = NumPyArray2TensorDataset(features_npy=X_train_21cmGEM, 
                                     targets_npy=y_train_21cmGEM)
 
-#train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_21cmGEM.npy', 
-#                                    targets_npy_file=data_path + 'y_train_21cmGEM.npy')
-
 # Create training DataLoader
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
+#PATH = "/projects/jodo2960/KAN/21cmKAN/"
+#data_path = PATH+"data/"
+#train_maxs_21cmGEM = np.load(data_path + 'train_maxs_21cmGEM.npy')
+#train_mins_21cmGEM = np.load(data_path + 'train_mins_21cmGEM.npy')
+#X_test_21cmGEM_true = np.load(data_path + 'X_test_true_21cmGEM.npy')
+#y_test_21cmGEM_true = np.load(data_path + 'signals_21cmGEM_true.npy')
+#train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_21cmGEM.npy', 
+#                                    targets_npy_file=data_path + 'y_train_21cmGEM.npy')
 #val_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_val_21cmGEM.npy', 
 #                                  targets_npy_file=data_path + 'y_val_21cmGEM.npy')
-
 # Grab validation data and put it on the GPU 
 # TODO: This does not make sense, we should not use Dataset for this, but is ok for now
 #X_val_21cmGEM = torch.from_numpy(val_dataset.features)
 #y_val_21cmGEM = torch.from_numpy(val_dataset.targets)
 #X_val_21cmGEM = X_val_21cmGEM.to(device)
 #y_val_21cmGEM = y_val_21cmGEM.to(device)
-
 #X_train_21cmGEM = torch.from_numpy(train_dataset.features)
 #y_train_21cmGEM = torch.from_numpy(train_dataset.targets)
 #X_train_21cmGEM = X_train_21cmGEM.to(device)
@@ -406,7 +401,7 @@ class Emulate:
             with torch.no_grad():
                 val_pred = self.emulator(X_val_21cmGEM)
                 sqrt_MSE = torch.sqrt(torch.mean((val_pred-y_val_21cmGEM)**2, dim=1))
-                error = (sqrt_MSE/max_abs)*100
+                error = (sqrt_MSE/min_abs)*100
                 mean_error = torch.mean(error)
                 max_error = error.max()
 
