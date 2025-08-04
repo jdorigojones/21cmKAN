@@ -278,17 +278,17 @@ class Emulate:
         Parameters
         ----------
         par_train : np.ndarray
-            Parameters in training set (normalized to be used in train())
+            Parameters in training set (normalized, used in train() via train_dataloader)
         par_val : np.ndarray
-            Parameters in validation set (normalized to be used in train())
+            Parameters in validation set (normalized, used in train())
         par_test : np.ndarray
-            Parameters in test set (unnormalized to be used in test_error())
+            Parameters in test set (unnormalized, used in test_error())
         signal_train : np.ndarray
-            Signals in training set (normalized to be used in train())
+            Signals in training set (normalized, used in train() via train_dataloader)
         signal_val : np.ndarray
-            Signals in validation set (normalized to be used in train())
+            Signals in validation set (normalized, used in train())
         signal_test : np.ndarray
-            Signals in test set (unnormalized to be used in test_error())
+            Signals in test set (unnormalized, used in test_error())
         redshifts : np.ndarray or None
             Array of redshifts corresponding to each signal
         frequencies : np.ndarray or None
@@ -407,8 +407,8 @@ class Emulate:
 
             self.emulator.eval()
             with torch.no_grad():
-                val_pred = self.emulator(X_val_21cmGEM)
-                RMSE = torch.sqrt(torch.mean((val_pred-y_val_21cmGEM)**2, dim=1))
+                val_pred = self.emulator(self.par_val)
+                RMSE = torch.sqrt(torch.mean((val_pred-self.signal_val)**2, dim=1))
                 rel_error = (RMSE/min_abs)*100
                 mean_rel_error = torch.mean(rel_error)
                 max_rel_error = rel_error.max()
