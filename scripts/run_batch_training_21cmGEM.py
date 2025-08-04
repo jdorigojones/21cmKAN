@@ -73,11 +73,11 @@ parameters_log_val[:,3:] = par_val[:,3:].copy()
 
 N_proc_train = np.shape(parameters_log_train)[0] # number of signals (i.e., parameter sets) to process
 p_train = np.shape(par_train)[1] # number of input parameters (# of physical params)
-proc_params_train = np.zeros((N_proc_train,p))
+proc_params_train = np.zeros((N_proc_train,p_train))
 
 N_proc_val = np.shape(parameters_log_val)[0] # number of signals (i.e., parameter sets) to process
 p_val = np.shape(par_val)[1] # number of input parameters (# of physical params)
-proc_params_val = np.zeros((N_proc_val,p))
+proc_params_val = np.zeros((N_proc_val,p_val))
         
 for i in range(p_train):
     x_train = parameters_log_train[:,i]
