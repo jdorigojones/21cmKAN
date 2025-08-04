@@ -3,6 +3,7 @@ import torch
 import torch.optim as optim
 import numpy as np 
 import os
+import h5py
 from utils import NumPy2TensorDataset
 from utils import NumPyArray2TensorDataset
 
