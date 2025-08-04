@@ -14,16 +14,19 @@ print("Device: ", device)
 # Set default torch type to float64
 torch.set_default_dtype(torch.float64)
 
-num_epochs = 400
+num_epochs = 400 # default number of epochs for training 21cmKAN on 21cmGEM set (see Sec 2.3 of Dorigo Jones et al. 2025)
 history_size = 10  # history size for LBFGS optimizer 
-layers_hidden = [7, 44, 44, 71, 451]  # specify KAN architecture
+layers_hidden = [7, 44, 44, 71, 451]  # specify KAN model architecture
 batch_size = 100
 print(f"layers_hidden: {layers_hidden}")
 print(f"batch_size: {batch_size}")
 print(f"num_epochs: {num_epochs}")
 
+# define paths of the saved trained 21cmKAN networks and min/max training set values used for preprocessing
 PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
 model_save_path = PATH+"models/emulator_21cmGEM.pth"
+train_mins_21cmGEM = np.load(PATH+"models/train_mins_21cmGEM.npy")
+train_maxs_21cmGEM = np.load(PATH+"models/train_maxs_21cmGEM.npy")
 
 z_list = np.linspace(5, 50, 451) # list of redshifts for 21cmGEM signals; equiv to np.arange(5, 50.1, 0.1)
 vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
@@ -37,9 +40,6 @@ with h5py.File(PATH + 'dataset_21cmGEM.h5', "r") as f:
     signal_val = np.asarray(f['signal_val'])[()]
     y_test_21cmGEM_true = np.asarray(f['signal_test'])[()]
 f.close()
-
-train_mins_21cmGEM = np.load(PATH+"models/train_mins_21cmGEM.npy")
-train_maxs_21cmGEM = np.load(PATH+"models/train_maxs_21cmGEM.npy")
 
 # preprocess/normalize input physical parameters values of training and validation sets
 unproc_f_s_train = par_train[:,0].copy() # f_*, star formation efficiency
@@ -94,7 +94,7 @@ proc_params_val = 0
 par_val = 0
 X_val_21cmGEM = X_val_21cmGEM.to(device)
 
-# preprocess/normalize signals (dT_b) of training and validaton sets
+# preprocess/normalize signals (dT_b) in training and validaton sets
 proc_signals_train = signal_train.copy()
 proc_signals_train = (signal_train - train_mins[-1])/(train_maxs[-1]-train_mins[-1])  # global Min-Max normalization
 proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
@@ -114,13 +114,11 @@ y_val_21cmGEM = y_val_21cmGEM.to(device)
 # Calculate the absolute minimum value of each normalized validation set signal, used to compute relative error
 min_abs = torch.abs(y_val_21cmGEM).min(dim=1)[0]
 
-# Create normalized training and validation Datasets 
-train_dataset = NumPyArray2TensorDataset(features_npy=X_train_21cmGEM, 
-                                    targets_npy=y_train_21cmGEM)
-
-# Create training DataLoader
+# Create normalized training Dataset and DataLoader
+train_dataset = NumPyArray2TensorDataset(features_npy=X_train_21cmGEM, targets_npy=y_train_21cmGEM)
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
+# old code TODO: remove
 #PATH = "/projects/jodo2960/KAN/21cmKAN/"
 #data_path = PATH+"data/"
 #train_maxs_21cmGEM = np.load(data_path + 'train_maxs_21cmGEM.npy')
@@ -142,16 +140,17 @@ train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_s
 #X_train_21cmGEM = X_train_21cmGEM.to(device)
 #y_train_21cmGEM = y_train_21cmGEM.to(device)
 
-def model(layers_hidden, name=None):
+def model(layer_nodes, name=None):
     """
     Generate a 21cmKAN model
 
     Parameters
     ----------
-    num_params : int
-        Number of physical parameters plus one for the frequency step (e.g., 8 for 21cmGEM set; 9 for ARES set)
-    dim_output : int
-        Dimensionality of the fully-connected output layer of the model
+    layer_nodes : np.ndarray
+        array containing the number of nodes in each layer.
+        the first value is the number of input layer nodes (7 for 7 physical parameters in the 21cmGEM set)
+        the next three values are the number of nodes in each hidden layer (44, 44, 71 for the default 21cmKAN architecture)
+        the last value is the number of output layer nodes (451 for 451 frequencies/redshifts in the 21cmGEM set)
     name : str or None
         Name of the model. Default : None
 
@@ -161,7 +160,7 @@ def model(layers_hidden, name=None):
         The generated model
     """
 
-    model = KAN(layers_hidden=layers_hidden, grid_size=7, spline_order=3) #model.to(device)
+    model = KAN(layer_nodes=layers_hidden, grid_size=7, spline_order=3) #model.to(device)
     return model
 
 def frequency(z):
