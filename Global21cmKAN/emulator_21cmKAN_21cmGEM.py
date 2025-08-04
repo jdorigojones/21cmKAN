@@ -144,13 +144,13 @@ train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_s
 #X_train_21cmGEM = X_train_21cmGEM.to(device)
 #y_train_21cmGEM = y_train_21cmGEM.to(device)
 
-def model(layer_nodes, grid_size, spline_order, name=None):
+def model(layers_hidden=layer_nodes, grid_size=grid_size, spline_order=spline_order, name=None):
     """
     Generate a 21cmKAN model
 
     Parameters
     ----------
-    layer_nodes : np.ndarray
+    layers_hidden : np.ndarray
         array containing the number of nodes in each network layer
         first value is the number of input layer nodes. Default: 7, for 7 physical parameters in the 21cmGEM set
         next three values are the number of nodes in each hidden layer. Default: 44, 44, 71 for training on the 21cmGEM set
@@ -168,7 +168,7 @@ def model(layer_nodes, grid_size, spline_order, name=None):
         The generated model
     """
 
-    model = KAN(layer_nodes=layer_nodes, grid_size=grid_size, spline_order=spline_order) #model.to(device)
+    model = KAN(layers_hidden, grid_size, spline_order) #model.to(device)
     return model
 
 def frequency(z):
@@ -334,7 +334,7 @@ class Emulate:
 
         self.par_labels = [r'$f_*$', r'$V_c$', r'$f_X$', r'$\tau$', r'$\alpha$', r'$\nu_{\rm min}$', r'$R_{\rm mfp}$']
 
-        self.emulator = model(layer_nodes, grid_size, spline_order, name="emulator_21cmGEM")
+        self.emulator = model(layers_hidden, grid_size, spline_order, name="emulator_21cmGEM")
 
         self.train_mins = train_mins_21cmGEM
         self.train_maxs = train_maxs_21cmGEM
