@@ -15,7 +15,6 @@ print("Device: ", device)
 torch.set_default_dtype(torch.float64)
 
 num_epochs = 400 # default number of epochs for training 21cmKAN on 21cmGEM set (see Sec 2.3 of Dorigo Jones et al. 2025)
-history_size = 10  # history size for LBFGS optimizer 
 layers_hidden = [7, 44, 44, 71, 451]  # specify KAN model architecture
 batch_size = 100
 print(f"layers_hidden: {layers_hidden}")
