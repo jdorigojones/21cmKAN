@@ -5,6 +5,7 @@ import torch
 import torch.optim as optim
 from efficient_kan import KAN
 from utils import NumPy2TensorDataset
+from utils import NumPyArray2TensorDataset
 from Global21cmKAN import __path__
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -121,8 +122,11 @@ max_abs = torch.abs(y_val_21cmGEM).min(dim=1)[0]
 
 
 # Create normalized training and validation Datasets 
-train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_21cmGEM.npy', 
-                                    targets_npy_file=data_path + 'y_train_21cmGEM.npy')
+train_dataset = NumPyArray2TensorDataset(features_npy=X_train_21cmGEM, 
+                                    targets_npy=y_train_21cmGEM)
+
+#train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_21cmGEM.npy', 
+#                                    targets_npy_file=data_path + 'y_train_21cmGEM.npy')
 
 # Create training DataLoader
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
