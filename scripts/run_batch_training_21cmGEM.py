@@ -120,7 +120,7 @@ train_dataset = NumPyArray2TensorDataset(features_npy=X_train_21cmGEM, targets_n
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
 # initialize model 
-model = KAN(layer_nodes=layer_nodes, grid_size=grid_size, spline_order=spline_order)
+model = KAN(layers_hidden=layer_nodes, grid_size=grid_size, spline_order=spline_order)
 model.to(device)
 
 # Define optimizer 
