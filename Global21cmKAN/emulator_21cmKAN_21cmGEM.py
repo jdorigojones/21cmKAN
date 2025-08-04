@@ -14,12 +14,17 @@ print("Device: ", device)
 # Set default torch type to float64
 torch.set_default_dtype(torch.float64)
 
-num_epochs = 400 # default number of epochs for training 21cmKAN on 21cmGEM set (see Sec 2.3 of Dorigo Jones et al. 2025)
-layers_hidden = [7, 44, 44, 71, 451]  # specify KAN model architecture
+# specify KAN model architecture and configs for training on the 21cmGEM set; see Sec 2.3 of Dorigo Jones et al. 2025
+layer_nodes = [7, 44, 44, 71, 451]
+grid_size = 7
+spline_order = 3
+num_epochs = 400
 batch_size = 100
-print(f"layers_hidden: {layers_hidden}")
-print(f"batch_size: {batch_size}")
-print(f"num_epochs: {num_epochs}")
+print(f"nodes in each layer: {layer_nodes}")
+print(f"number of grid intervals in B-splines: {grid_size}")
+print(f"order of splines in B-splines: {spline_order}")
+print(f"number of training epochs: {num_epochs}")
+print(f"training batch size: {batch_size}")
 
 # define paths of the saved trained 21cmKAN networks and min/max training set values used for preprocessing
 PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
@@ -139,17 +144,21 @@ train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_s
 #X_train_21cmGEM = X_train_21cmGEM.to(device)
 #y_train_21cmGEM = y_train_21cmGEM.to(device)
 
-def model(layer_nodes, name=None):
+def model(layer_nodes, grid_size, spline_order, name=None):
     """
     Generate a 21cmKAN model
 
     Parameters
     ----------
     layer_nodes : np.ndarray
-        array containing the number of nodes in each layer.
-        the first value is the number of input layer nodes (7 for 7 physical parameters in the 21cmGEM set)
-        the next three values are the number of nodes in each hidden layer (44, 44, 71 for the default 21cmKAN architecture)
-        the last value is the number of output layer nodes (451 for 451 frequencies/redshifts in the 21cmGEM set)
+        array containing the number of nodes in each network layer
+        first value is the number of input layer nodes. Default: 7, for 7 physical parameters in the 21cmGEM set
+        next three values are the number of nodes in each hidden layer. Default: 44, 44, 71 for training on the 21cmGEM set
+        last value is the number of output layer nodes. Default: 451, for 451 frequencies/redshifts in the 21cmGEM set
+    grid_size : int
+        number of grid intervals in parameterized B-spline activation functions. Default: 7
+    spline_order : int
+        order of individual splines in parameterized B-spline activation functions. Default: 3
     name : str or None
         Name of the model. Default : None
 
@@ -159,7 +168,7 @@ def model(layer_nodes, name=None):
         The generated model
     """
 
-    model = KAN(layer_nodes=layers_hidden, grid_size=7, spline_order=3) #model.to(device)
+    model = KAN(layer_nodes=layer_nodes, grid_size=grid_size, spline_order=spline_order) #model.to(device)
     return model
 
 def frequency(z):
@@ -198,7 +207,7 @@ def redshift(nu):
 
 def error(true_signal, emulated_signal, relative=True, nu=None, nu_low=None, nu_high=None):
     """
-    Compute the relative rms error (Eq. 3 in DJ+24) between the true and emulated signal(s)
+    Compute the relative rms error (Eq. 3 in DJ+25) between the true and emulated signal(s)
 
     Parameters
     ----------
@@ -263,23 +272,23 @@ class Emulate:
         redshifts=z_list,
         frequencies=None):
         """
-        The emulator class for building, training, and using 21cmLSTM to emulate 21cmGEM signals 
-        The default parameters are for training/testing 21cmLSTM on the 21cmGEM set described in Section 2.2 of DJ+24
+        The emulator class for building, training, and using 21cmKAN to emulate 21cmGEM signals 
+        The default parameters are for training/testing 21cmKAN on the 21cmGEM set described in Section 2.2 of DJ+25
 
         Parameters
         ----------
         par_train : np.ndarray
-            Parameters in training set
+            Parameters in training set (normalized)
         par_val : np.ndarray
-            Parameters in validation set
+            Parameters in validation set (normalized)
         par_test : np.ndarray
-            Parameters in test set
+            Parameters in test set (unnormalized)
         signal_train : np.ndarray
-            Signals in training set
+            Signals in training set (normalized)
         signal_val : np.ndarray
-            Signals in validation set
+            Signals in validation set (normalized)
         signal_test : np.ndarray
-            Signals in test set
+            Signals in test set (unnormalized)
         redshifts : np.ndarray or None
             Array of redshifts corresponding to each signal
         frequencies : np.ndarray or None
@@ -312,7 +321,7 @@ class Emulate:
         -------
         load_model : load an existing instance of 21cmKAN trained on 21cmGEM data
         train : train the emulator on 21cmGEM data
-        predict : use the emulator to predict global signals from input physical parameters
+        predict : use the emulator to predict global 21 cm signal(s) from input physical parameters
         test_error : compute the rms error of the emulator evaluated on the test set
         save : save the model class instance with all attributes
         """
@@ -323,10 +332,9 @@ class Emulate:
         self.signal_val = signal_val
         self.signal_test = signal_test
 
-        self.par_labels = [r'$f_*$', r'$V_c$', r'$f_X$', r'$\tau$',
-                           r'$\alpha$', r'$\nu_{\rm min}$', r'$R_{\rm mfp}$']
+        self.par_labels = [r'$f_*$', r'$V_c$', r'$f_X$', r'$\tau$', r'$\alpha$', r'$\nu_{\rm min}$', r'$R_{\rm mfp}$']
 
-        self.emulator = model(layers_hidden, name="emulator_21cmGEM")
+        self.emulator = model(layer_nodes, grid_size, spline_order, name="emulator_21cmGEM")
 
         self.train_mins = train_mins_21cmGEM
         self.train_maxs = train_maxs_21cmGEM
@@ -341,9 +349,9 @@ class Emulate:
 
     def load_model(self, model_path=model_save_path):
         """
-        Load a saved model instance of 21cmKAN trained on the 21cmGEM data set.
-        The instance of 21cmKAN trained on 21cmGEM included in this repository is the one
-        used to perform nested sampling analyses in DJ+25
+        Load a saved model instance of 21cmKAN trained on 21cmGEM data.
+        The instance of 21cmKAN trained on 21cmGEM included in this repository is
+        the same one used to perform nested sampling analyses in DJ+25 (Section 3.3)
 
         Parameters
         ----------
@@ -364,9 +372,11 @@ class Emulate:
         Parameters
         ----------
         epochs : int
-            Number of epochs to train for the given batch_size
+            Number of epochs to train the network for the given batch_size
+            Default : 400
         batch_size : int
-            Number of signals in each minibatch trained on
+            Number of signals whose loss values are averaged at a time to update the network weights during each epoch
+            Default : 100
         callbacks : list of tf.keras.callbacks.Callback
             Callbacks to pass to the training loop. Default : []
         verbose : 0, 1, 2
@@ -398,8 +408,8 @@ class Emulate:
             self.emulator.eval()
             with torch.no_grad():
                 val_pred = self.emulator(X_val_21cmGEM)
-                sqrt_MSE = torch.sqrt(torch.mean((val_pred-y_val_21cmGEM)**2, dim=1))
-                error = (sqrt_MSE/min_abs)*100
+                RMSE = torch.sqrt(torch.mean((val_pred-y_val_21cmGEM)**2, dim=1))
+                error = (RMSE/min_abs)*100
                 mean_error = torch.mean(error)
                 max_error = error.max()
 
