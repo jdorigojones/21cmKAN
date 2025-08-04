@@ -2,6 +2,26 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
+class NumPyArray2TensorDataset(Dataset):
+    def __init__(self, features_npy, targets_npy):
+        # Load full numpy array into memory. TODO: could put all data in 1 npy file 
+        self.features = features_npy
+        self.targets = targets_npy
+        
+    def __len__(self):
+        # Return the number of samples in the dataset
+        return len(self.targets)
+    
+    def __getitem__(self, idx):
+
+        # Convert feature sample to a PyTorch tensor
+        features_tensor = torch.from_numpy(self.features[idx])
+
+        # Convert targets sample to a PyTorch tensor
+        targets_tensor = torch.from_numpy(self.targets[idx])
+
+        return features_tensor, targets_tensor
+
 class NumPy2TensorDataset(Dataset):
     def __init__(self, features_npy_file, targets_npy_file):
         # Load full numpy array into memory. TODO: could put all data in 1 npy file 
