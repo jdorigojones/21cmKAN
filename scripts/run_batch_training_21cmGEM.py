@@ -81,11 +81,11 @@ proc_params_val = np.zeros((N_proc_val,p_val))
         
 for i in range(p_train):
     x_train = parameters_log_train[:,i]
-    proc_params_train[:,i] = (x_train-train_mins[i])/(train_maxs[i]-train_mins[i])
+    proc_params_train[:,i] = (x_train-train_mins_21cmGEM[i])/(train_maxs_21cmGEM[i]-train_mins_21cmGEM[i])
 
 for i in range(p_val):
     x_val = parameters_log_val[:,i]
-    proc_params_val[:,i] = (x_val-train_mins[i])/(train_maxs[i]-train_mins[i])
+    proc_params_val[:,i] = (x_val-train_mins_21cmGEM[i])/(train_maxs_21cmGEM[i]-train_mins_21cmGEM[i])
 
 X_train_21cmGEM = torch.from_numpy(proc_params_train)
 proc_params_train = 0
