@@ -278,17 +278,17 @@ class Emulate:
         Parameters
         ----------
         par_train : np.ndarray
-            Parameters in training set (normalized)
+            Parameters in training set (normalized to be used in train())
         par_val : np.ndarray
-            Parameters in validation set (normalized)
+            Parameters in validation set (normalized to be used in train())
         par_test : np.ndarray
-            Parameters in test set (unnormalized)
+            Parameters in test set (unnormalized to be used in test_error())
         signal_train : np.ndarray
-            Signals in training set (normalized)
+            Signals in training set (normalized to be used in train())
         signal_val : np.ndarray
-            Signals in validation set (normalized)
+            Signals in validation set (normalized to be used in train())
         signal_test : np.ndarray
-            Signals in test set (unnormalized)
+            Signals in test set (unnormalized to be used in test_error())
         redshifts : np.ndarray or None
             Array of redshifts corresponding to each signal
         frequencies : np.ndarray or None
@@ -409,17 +409,15 @@ class Emulate:
             with torch.no_grad():
                 val_pred = self.emulator(X_val_21cmGEM)
                 RMSE = torch.sqrt(torch.mean((val_pred-y_val_21cmGEM)**2, dim=1))
-                error = (RMSE/min_abs)*100
-                mean_error = torch.mean(error)
-                max_error = error.max()
+                rel_error = (RMSE/min_abs)*100
+                mean_rel_error = torch.mean(rel_error)
+                max_rel_error = rel_error.max()
 
-            # Update learning rate 
-            # scheduler.step()
-            # scheduler.step(max_error)
-            print(f"Epoch: {epoch + 1}, Mean Error: {mean_error}, Max Error: {max_error}, Loss: {loss}")
+            # code to update the learning rate, if desired: scheduler.step() ; scheduler.step(max_error)
+            print(f"Epoch: {epoch + 1}, Mean Relative Error: {mean_rel_error}, Max Relative Error: {max_rel_error}, Training MSE Loss: {loss}")
 
+        # save the trained network; overwrites the saved network included in the repository; update model_save_path if this is not desired
         torch.save(self.emulator, model_save_path)
-
         return loss
 
     def predict(self, params):
@@ -462,6 +460,8 @@ class Emulate:
 
         proc_params_test = torch.from_numpy(proc_params)
         proc_params = 0
+        params = 0
+        parameters_log = 0
         proc_params_test = proc_params_test.to(device)
 
         self.emulator.eval()
