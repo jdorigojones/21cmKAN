@@ -49,7 +49,8 @@ y_test_21cmGEM_true = signal_test
 #X_test_21cmGEM_true = np.load(data_path + 'X_test_true_21cmGEM.npy')
 #y_test_21cmGEM_true = np.load(data_path + 'signals_21cmGEM_true.npy')
 
-unproc_f_s_train = par_train[:,0].copy() # f_*, star formation efficiency, # preprocess input physical parameters
+# preprocess input physical parameters for training and validation sets
+unproc_f_s_train = par_train[:,0].copy() # f_*, star formation efficiency
 unproc_V_c_train = par_train[:,1].copy() # V_c, minimum circular velocity of star-forming halos 
 unproc_f_X_train = par_train[:,2].copy() # f_X, X-ray efficiency of sources
 unproc_f_s_train = np.log10(unproc_f_s_train)
