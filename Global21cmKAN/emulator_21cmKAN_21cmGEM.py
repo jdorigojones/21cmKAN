@@ -168,7 +168,7 @@ def model(layers_hidden=layer_nodes, grid_size=grid_size, spline_order=spline_or
         The generated model
     """
 
-    model = KAN(layers_hidden, grid_size, spline_order) #model.to(device)
+    model = KAN(layers_hidden, grid_size, spline_order)
     return model
 
 def frequency(z):
