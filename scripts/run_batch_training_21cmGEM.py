@@ -2,6 +2,7 @@ from efficient_kan import KAN
 import torch 
 import torch.optim as optim
 import numpy as np 
+import os
 from utils import NumPy2TensorDataset
 from utils import NumPyArray2TensorDataset
 
