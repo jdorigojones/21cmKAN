@@ -34,7 +34,7 @@ train_maxs_21cmGEM = np.load(PATH+"models/train_maxs_21cmGEM.npy")
 
 z_list = np.linspace(5, 50, 451) # list of redshifts for 21cmGEM signals; equiv to np.arange(5, 50.1, 0.1)
 vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
-# Load in unnormalized training, validation, and test data and data needed to transform the output of the model
+# Load in unnormalized training, validation, and test data
 with h5py.File(PATH + 'dataset_21cmGEM.h5', "r") as f:
     print("Keys: %s" % f.keys())
     par_train = np.asarray(f['par_train'])[()]
