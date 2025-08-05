@@ -32,47 +32,47 @@ print(f"order of splines in B-splines: {spline_order}")
 print(f"number of training epochs: {num_epochs}")
 print(f"training batch size: {batch_size}")
 
-# define paths of the saved trained 21cmKAN networks and min/max training set values used for preprocessing
+# define path containing saved trained 21cmKAN networks and min/max training set values used for preprocessing
 PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
 model_save_path = PATH+"models/emulator_yourmodel.pth"
-#train_mins_yourmodel = np.load(PATH+"models/train_mins_yourmodel.npy") # UNCOMMENT
-#train_maxs_yourmodel = np.load(PATH+"models/train_maxs_yourmodel.npy") # UNCOMMENT
+train_mins_yourmodel = np.load(PATH+"models/train_mins_yourmodel.npy")
+train_maxs_yourmodel = np.load(PATH+"models/train_maxs_yourmodel.npy")
 
 z_list = np.linspace(1, 100, 100) # list of redshifts for signals in your model
 vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
 # Load in unnormalized training, validation, and test data made by your model as numpy arrays; UNCOMMENT
-#with h5py.File(PATH + 'dataset_yourmodel.h5', "r") as f:
-#    print("Keys: %s" % f.keys())
-#    par_train = np.asarray(f['par_train'])[()]
-#    par_val = np.asarray(f['par_val'])[()]
-#    X_test_yourmodel_true = np.asarray(f['par_test'])[()]
-#    signal_train = np.asarray(f['signal_train'])[()]
-#    signal_val = np.asarray(f['signal_val'])[()]
-#    y_test_yourmodel_true = np.asarray(f['signal_test'])[()]
-#f.close()
+with h5py.File(PATH + 'dataset_yourmodel.h5', "r") as f:
+    print("Keys: %s" % f.keys())
+    par_train = np.asarray(f['par_train'])[()]
+    par_val = np.asarray(f['par_val'])[()]
+    X_test_yourmodel_true = np.asarray(f['par_test'])[()]
+    signal_train = np.asarray(f['signal_train'])[()]
+    signal_val = np.asarray(f['signal_val'])[()]
+    y_test_yourmodel_true = np.asarray(f['signal_test'])[()]
+f.close()
 
 # now preprocess/normalize the input physical parameters values in your training and validation sets
 # see the other emulator scripts for examples of data preprocessing
 # includes taking the log10 of certain parameters and then performing global MinMax normalizations
 # train_mins_yourmodel[i] is the minimum value of parameter i in the training set, used for normalization
 # train_maxs_yourmodel[i] is the maximum value of parameter i in the training set, used for normalization
-# X_train_yourmodel is your normalized training set data/parameters
-# X_val_yourmodel is your normalized validation set data/parameters
+X_train_yourmodel = np.array([]) # define your normalized training set data/parameters
+X_val_yourmodel = np.array([]) # define your normalized validation set data/parameters
 
 # now preprocess/normalize the signals (dT_b values) in your training and validaton sets
 # see the other emulator scripts for examples of data preprocessing
 # includes performing global MinMax normalizations
 # train_mins_yourmodel[-1] is the absolute minimum dT_b value in the training set, used for normalization
 # train_maxs_yourmodel[-1] is the absolute maximum dT_b value in the training set, used for normalization
-# y_train_yourmodel is your normalized training set signals
-# y_val_yourmodel is your normalized validation set signals
+y_train_yourmodel = np.array([]) # define your normalized training set signals
+y_val_yourmodel = np.array([]) # define your normalized validation set signals
 
 # Calculate the absolute minimum value of each normalized validation set signal, used to compute relative error
-# min_abs = torch.abs(y_val_yourmodel).min(dim=1)[0]
+min_abs = torch.abs(y_val_yourmodel).min(dim=1)[0]
 
-# Create normalized training Dataset and DataLoader; UNCOMMENT
-# train_dataset = NumPyArray2TensorDataset(features_npy=X_train_yourmodel, targets_npy=y_train_yourmodel)
-# train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+# Create normalized training Dataset and DataLoader
+train_dataset = NumPyArray2TensorDataset(features_npy=X_train_yourmodel, targets_npy=y_train_yourmodel)
+train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
 def model(layers_hidden=layer_nodes, grid_size=grid_size, spline_order=spline_order, name=None):
     """
@@ -82,9 +82,9 @@ def model(layers_hidden=layer_nodes, grid_size=grid_size, spline_order=spline_or
     ----------
     layers_hidden : np.ndarray
         array containing the number of nodes in each network layer
-        first value is the number of input layer nodes. Default: 7, for 7 physical parameters in the 21cmGEM set
-        next three values are the number of nodes in each hidden layer. Default: 44, 44, 71
-        last value is the number of output layer nodes. Default: 451, for 451 frequencies/redshifts in the 21cmGEM set
+        first value is the number of input layer nodes
+        next three values are the number of nodes in each of the three hidden layers
+        last value is the number of output layer nodes
     grid_size : int
         number of grid intervals in parameterized B-spline activation functions. Default: 7
     spline_order : int
@@ -193,17 +193,17 @@ def error(true_signal, emulated_signal, relative=True, nu=None, nu_low=None, nu_
 class Emulate:
     def __init__(
         self,
-        par_train=X_train_21cmGEM,
-        par_val=X_val_21cmGEM,
-        par_test=X_test_21cmGEM_true,
-        signal_train=y_train_21cmGEM,
-        signal_val=y_val_21cmGEM,
-        signal_test=y_test_21cmGEM_true,
+        par_train=X_train_yourmodel,
+        par_val=X_val_yourmodel,
+        par_test=X_test_yourmodel_true,
+        signal_train=y_train_yourmodel,
+        signal_val=y_val_yourmodel,
+        signal_test=y_test_yourmodel_true,
         redshifts=z_list,
         frequencies=None):
         """
-        The emulator class for building, training, and using 21cmKAN to emulate 21cmGEM signals 
-        The default parameters are for training/testing 21cmKAN on the 21cmGEM set described in Section 2.2 of DJ+25
+        The emulator class for building, training, and using 21cmKAN to emulate signals in your model
+        The default parameters for training/testing 21cmKAN on the 21cmGEM and ARES sets are described in Section 2.2 of DJ+25
 
         Parameters
         ----------
@@ -249,10 +249,10 @@ class Emulate:
 
         Methods
         -------
-        load_model : load an existing instance of 21cmKAN trained on 21cmGEM data
-        train : train the emulator on 21cmGEM data
+        load_model : load an existing instance of 21cmKAN trained on your data
+        train : train the emulator on your data
         predict : use the emulator to predict global 21 cm signal(s) from input physical parameters
-        test_error : compute the rms error of the emulator evaluated on the test set
+        test_error : compute the rms error of the emulator evaluated on your test set
         save : save the model class instance with all attributes
         """
         self.par_train = par_train
@@ -262,12 +262,12 @@ class Emulate:
         self.signal_val = signal_val
         self.signal_test = signal_test
 
-        self.par_labels = [r'$f_*$', r'$V_c$', r'$f_X$', r'$\tau$', r'$\alpha$', r'$\nu_{\rm min}$', r'$R_{\rm mfp}$']
+        self.par_labels = [r''] # fill with your parameter labels
 
-        self.emulator = model(layer_nodes, grid_size, spline_order, name="emulator_21cmGEM")
+        self.emulator = model(layer_nodes, grid_size, spline_order, name="emulator_yourmodel")
 
-        self.train_mins = train_mins_21cmGEM
-        self.train_maxs = train_maxs_21cmGEM
+        self.train_mins = train_mins_yourmodel
+        self.train_maxs = train_maxs_yourmodel
 
         if frequencies is None:
             if redshifts is not None:
@@ -279,9 +279,7 @@ class Emulate:
 
     def load_model(self, model_path=model_save_path):
         """
-        Load a saved model instance of 21cmKAN trained on 21cmGEM data.
-        The instance of 21cmKAN trained on 21cmGEM included in this repository is
-        the same one used to perform nested sampling analyses in DJ+25 (Section 3.3)
+        Load a saved model instance of 21cmKAN trained on your data.
 
         Parameters
         ----------
@@ -297,7 +295,7 @@ class Emulate:
 
     def train(self, num_epochs=num_epochs, batch_size=batch_size, callbacks=[], verbose=2, shuffle='True'):
         """
-        Train an instance of 21cmKAN on the 21cmGEM data set
+        Train an instance of 21cmKAN on your data set
 
         Parameters
         ----------
@@ -350,6 +348,8 @@ class Emulate:
             
             # code to update the learning rate, if desired: scheduler.step() ; scheduler.step(max_error)
             print(f"Epoch: {epoch + 1}, Training Loss: {train_loss}, Validation Loss: {val_loss}")
+            train_losses.append(train_loss.item())
+            val_losses.append(val_loss.item())
 
         # save the trained network; overwrites the saved network included in the repository; update model_save_path if this is not desired
         torch.save(self.emulator, model_save_path)
@@ -357,7 +357,7 @@ class Emulate:
 
     def predict(self, params):
         """
-        Predict global 21 cm signal(s) from input 21cmGEM physical parameters using trained instance of 21cmKAN
+        Predict global 21 cm signal(s) from input physical parameters using trained instance of 21cmKAN
 
         Parameters
         ----------
@@ -371,32 +371,11 @@ class Emulate:
         """
         if len(np.shape(params)) == 1:
             params = np.expand_dims(params, axis=0) # if doing one signal at a time
-            
-        unproc_f_s = params[:,0].copy() # f_*, star formation efficiency, # preprocess input physical parameters
-        unproc_V_c = params[:,1].copy() # V_c, minimum circular velocity of star-forming halos 
-        unproc_f_X = params[:,2].copy() # f_X, X-ray efficiency of sources
-        unproc_f_s = np.log10(unproc_f_s)
-        unproc_V_c = np.log10(unproc_V_c)
-        unproc_f_X[unproc_f_X == 0] = 1e-6 # for f_X, set zero values to 1e-6 before taking log_10
-        unproc_f_X = np.log10(unproc_f_X)
-        parameters_log = np.empty(params.shape)
-        parameters_log[:,0] = unproc_f_s
-        parameters_log[:,1] = unproc_V_c
-        parameters_log[:,2] = unproc_f_X
-        parameters_log[:,3:] = params[:,3:].copy()
-        
-        N_proc = np.shape(parameters_log)[0] # number of signals (i.e., parameter sets) to process
-        p = np.shape(params)[1] # number of input parameters (# of physical params)
-        proc_params = np.zeros((N_proc,p))
-        
-        for i in range(p):
-            x = parameters_log[:,i]
-            proc_params[:,i] = (x-self.train_mins[i])/(self.train_maxs[i]-self.train_mins[i])
 
+        # include the same parameter preprocessing code performed earlier to transform the input
+        # physical parameters to normalized parameters that can be used to train 21cmKAN
+        proc_params = np.array([]) # your processed parameters numpy array
         proc_params_test = torch.from_numpy(proc_params)
-        proc_params = 0
-        params = 0
-        parameters_log = 0
         proc_params_test = proc_params_test.to(device)
 
         self.emulator.eval()
@@ -405,7 +384,7 @@ class Emulate:
 
         result = result.cpu().detach().numpy()
         unproc_signals = result.copy()
-        unproc_signals = (result*(self.train_maxs[-1]-self.train_mins[-1]))+self.train_mins[-1] # unpreprocess (i.e., denormalize) signals
+        unproc_signals = (result*(self.train_maxs[-1]-self.train_mins[-1]))+self.train_mins[-1] # denormalize signals
         unproc_signals = unproc_signals[:,::-1] # flip signals to be from high-z to low-z
         if unproc_signals.shape[0] == 1:
             return unproc_signals[0,:]
@@ -414,7 +393,7 @@ class Emulate:
 
     def test_error(self, relative=True, nu_low=None, nu_high=None):
         """
-        Compute the rms error for the loaded trained instance of 21cmKAN evaluated on the 1,704-signal 21cmGEM test set
+        Compute the rms error for the loaded trained instance of 21cmKAN evaluated on your test set
 
         Parameters
         ----------
@@ -440,5 +419,4 @@ class Emulate:
             nu_low=nu_low,
             nu_high=nu_high)
         return err
-
 
