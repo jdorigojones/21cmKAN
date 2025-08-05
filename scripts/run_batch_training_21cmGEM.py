@@ -90,7 +90,7 @@ for i in range(p_val):
 X_train_21cmGEM = torch.from_numpy(proc_params_train)
 proc_params_train = 0
 par_train = 0
-#X_train_21cmGEM = X_train_21cmGEM.to(device)
+X_train_21cmGEM = X_train_21cmGEM.to(device)
 
 X_val_21cmGEM = torch.from_numpy(proc_params_val)
 proc_params_val = 0
@@ -104,7 +104,7 @@ proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z
 y_train_21cmGEM = torch.from_numpy(np.copy(proc_signals_train))
 proc_signals_train = 0
 signal_train = 0
-#y_train_21cmGEM = y_train_21cmGEM.to(device)
+y_train_21cmGEM = y_train_21cmGEM.to(device)
 
 proc_signals_val = signal_val.copy()
 proc_signals_val = (signal_val - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])  # global Min-Max normalization
