@@ -1,7 +1,7 @@
 '''
 Name: 21cmKAN/scripts/KANSignalModel.py
 Author: Johnny Dorigo Jones
-Original: May 2022, Edited: August 2025
+Original: May 2022, Edited: August 2025 to include classes for both 21cmGEM and ARES
 Description: A model class which wraps around the 21cmKAN module for signal model evaluations
 '''
 from __future__ import division
@@ -9,8 +9,7 @@ import time
 import numpy as np
 from pylinex import LoadableModel
 import Global21cmKAN as Global21cmKAN
-from Global21cmKAN.eval_21cmKAN_21cmGEM import evaluate_21cmGEM
-from Global21cmKAN.eval_21cmKAN_ARES import evaluate_ARES
+from Global21cmKAN.evaluate_21cmKAN import evaluate_on_21cmGEM, evaluate_on_ARES
 
 try:
 	# this runs with no issues in python 2 but raises error in python 3
@@ -45,7 +44,7 @@ class KANSignalModel_21cmGEM(LoadableModel):
     @property
     def neural_network_predictor(self):
         if not hasattr(self, '_neural_network_predictor'):
-            self._neural_network_predictor = evaluate_21cmGEM()
+            self._neural_network_predictor = evaluate_on_21cmGEM()
         return self._neural_network_predictor
         
     def __call__(self, parameters):
@@ -80,7 +79,7 @@ class KANSignalModel_ARES(LoadableModel):
     @property
     def neural_network_predictor(self):
         if not hasattr(self, '_neural_network_predictor'):
-            self._neural_network_predictor = evaluate_ARES()
+            self._neural_network_predictor = evaluate_on_ARES()
         return self._neural_network_predictor
         
     def __call__(self, parameters):
