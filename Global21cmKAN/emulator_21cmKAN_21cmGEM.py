@@ -387,31 +387,34 @@ class Emulate:
 
         Returns
         -------
-        train_loss : list of floats
+        train_losses : list of floats
            Training set loss values for each epoch
-        val_loss : list of floats
+        val_losses : list of floats
            Validation set loss values for each epoch
         """
-
         optimizer = optim.AdamW(self.emulator.parameters(), lr=1e-3, weight_decay=1e-4) # Define optimizer
+        train_losses = []
+        val_losses = []
         for epoch in range(num_epochs):
             self.emulator.train()
             for batch_idx, (inputs, targets) in enumerate(train_dataloader):
                 inputs = inputs.to(device)
                 targets = targets.to(device)
                 def closure():
-                    global loss
+                    global train_loss
                     optimizer.zero_grad()
                     pred = self.emulator(inputs)
-                    loss = torch.mean((pred-targets)**2)
-                    loss.backward()
-                    return loss
+                    train_loss = torch.mean((pred-targets)**2)
+                    train_loss.backward()
+                    train_losses.append(train_loss)
+                    return train_loss
                 optimizer.step(closure)
 
             self.emulator.eval()
             with torch.no_grad():
                 val_pred = self.emulator(self.par_val)
                 val_loss = torch.mean((val_pred-self.signal_val)**2)
+                val_losses.append(val_loss)
                 # code to compute the normalized validation set relative RMSE, if desired to print along with loss
                 #RMSE = torch.sqrt(val_loss)
                 #rel_error = (RMSE/min_abs)*100
@@ -419,11 +422,11 @@ class Emulate:
                 #max_rel_error = rel_error.max()
             
             # code to update the learning rate, if desired: scheduler.step() ; scheduler.step(max_error)
-            print(f"Epoch: {epoch + 1}, Validation Loss: {val_loss}, Training Loss: {loss}")
+            print(f"Epoch: {epoch + 1}, Training Loss: {train_loss}, Validation Loss: {val_loss}")
 
         # save the trained network; overwrites the saved network included in the repository; update model_save_path if this is not desired
         torch.save(self.emulator, model_save_path)
-        return (val_loss, loss)
+        return (train_losses, val_losses)
 
     def predict(self, params):
         """
