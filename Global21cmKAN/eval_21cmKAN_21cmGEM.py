@@ -26,12 +26,12 @@ class evaluate():
         elif self.model_dir.endswith('/') is False:
             raise KeyError("'model_dir' must end with '/'.")
         
-        self.train_mins = np.load(f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/data/train_mins_21cmGEM.npy")
-        self.train_maxs = np.load(f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/data/train_maxs_21cmGEM.npy")
+        self.train_mins = np.load(self.model_dir+'/train_mins_21cmGEM.npy')
+        self.train_maxs = np.load(self.model_dir+'/train_maxs_21cmGEM.npy')
         
         self.model = kwargs.pop('model', None)
         if self.model is None:
-            self.model =  torch.load(self.model_dir+'21cmKAN_model_21cmGEM_default2_11.pth', weights_only=False)
+            self.model =  torch.load(self.model_dir+'emulator_21cmGEM.pth', weights_only=False)
             self.model.to(device)
     def __call__(self, parameters):
         if len(np.shape(parameters)) == 1:
