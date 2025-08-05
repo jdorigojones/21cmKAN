@@ -423,7 +423,7 @@ class Emulate:
 
         # save the trained network; overwrites the saved network included in the repository; update model_save_path if this is not desired
         torch.save(self.emulator, model_save_path)
-        return loss
+        return (val_loss, loss)
 
     def predict(self, params):
         """
