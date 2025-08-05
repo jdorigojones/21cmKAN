@@ -155,7 +155,7 @@ def model(layers_hidden=layer_nodes, grid_size=grid_size, spline_order=spline_or
     layers_hidden : np.ndarray
         array containing the number of nodes in each network layer
         first value is the number of input layer nodes. Default: 7, for 7 physical parameters in the 21cmGEM set
-        next three values are the number of nodes in each hidden layer. Default: 44, 44, 71 for training on the 21cmGEM set
+        next three values are the number of nodes in each hidden layer. Default: 44, 44, 71
         last value is the number of output layer nodes. Default: 451, for 451 frequencies/redshifts in the 21cmGEM set
     grid_size : int
         number of grid intervals in parameterized B-spline activation functions. Default: 7
