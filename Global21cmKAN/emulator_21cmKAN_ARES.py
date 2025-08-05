@@ -20,7 +20,7 @@ grid_size = 7
 spline_order = 3
 num_epochs = 800
 batch_size = 100
-#history_size = 10  # history size for LBFGS optimizer 
+#history_size = 10  # history size for LBFGS optimizer, if using that
 print(f"nodes in each layer: {layer_nodes}")
 print(f"number of grid intervals in B-splines: {grid_size}")
 print(f"order of splines in B-splines: {spline_order}")
@@ -46,7 +46,7 @@ with h5py.File(PATH + 'dataset_ARES.h5', "r") as f:
     y_test_ARES_true = np.asarray(f['test_labels'])[()]
 f.close()
 
-# preprocess/normalize input physical parameters values of training and validation sets
+# now preprocess/normalize input physical parameters values of training and validation sets
 unproc_c_X_train = par_train[:,0].copy() # c_X, normalization of X-ray luminosity-SFR relation
 unproc_T_min_train = par_train[:,2].copy() # T_min, minimum temperature of star-forming halos
 unproc_f_s_train = par_train[:,4].copy() # f_*,0, peak star formation efficiency 
@@ -99,27 +99,21 @@ for i in range(p_val):
     x_val = parameters_log_val[:,i]
     proc_params_val[:,i] = (x_val-train_mins_ARES[i])/(train_maxs_ARES[i]-train_mins_ARES[i])
 
-#X_train_ARES = torch.from_numpy(proc_params_train)
 X_train_ARES = proc_params_train.copy()
 proc_params_train = 0
 par_train = 0
-#X_train_ARES = X_train_ARES.to(device)
-
 X_val_ARES = torch.from_numpy(proc_params_val)
 proc_params_val = 0
 par_val = 0
 X_val_ARES = X_val_ARES.to(device)
 
-# preprocess/normalize signals (dT_b) in training and validaton sets
+# now preprocess/normalize signals (dT_b) in training and validaton sets
 proc_signals_train = signal_train.copy()
 proc_signals_train = (signal_train - train_mins_ARES[-1])/(train_maxs_ARES[-1]-train_mins_ARES[-1])  # global Min-Max normalization
 proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
-#y_train_ARES = torch.from_numpy(proc_signals_train)
 y_train_ARES = proc_signals_train.copy()
 proc_signals_train = 0
 signal_train = 0
-#y_train_ARES = y_train_ARES.to(device)
-
 proc_signals_val = signal_val.copy()
 proc_signals_val = (signal_val - train_mins_ARES[-1])/(train_maxs_ARES[-1]-train_mins_ARES[-1])  # global Min-Max normalization
 proc_signals_val = proc_signals_val[:,::-1] # flip signals to be from high-z to low-z
@@ -128,12 +122,12 @@ proc_signals_val = 0
 signal_val = 0
 y_val_ARES = y_val_ARES.to(device)
 
-# Calculate the absolute minimum value of each normalized validation set signal, used to compute relative error
-min_abs = torch.abs(y_val_ARES).min(dim=1)[0]
-
 # Create normalized training Dataset and DataLoader
 train_dataset = NumPyArray2TensorDataset(features_npy=X_train_ARES, targets_npy=y_train_ARES)
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+
+# Calculate the absolute minimum value of each normalized validation set signal, used to compute relative error
+min_abs = torch.abs(y_val_ARES).min(dim=1)[0]
 
 def model(layers_hidden=layer_nodes, grid_size=grid_size, spline_order=spline_order, name=None):
     """
