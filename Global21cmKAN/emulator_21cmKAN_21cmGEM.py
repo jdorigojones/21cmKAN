@@ -20,6 +20,7 @@ grid_size = 7
 spline_order = 3
 num_epochs = 400
 batch_size = 100
+#history_size = 10  # history size for LBFGS optimizer 
 print(f"nodes in each layer: {layer_nodes}")
 print(f"number of grid intervals in B-splines: {grid_size}")
 print(f"order of splines in B-splines: {spline_order}")
