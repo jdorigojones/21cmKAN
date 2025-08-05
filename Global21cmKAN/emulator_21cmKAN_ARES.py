@@ -5,6 +5,7 @@ import torch
 import torch.optim as optim
 from efficient_kan import KAN
 from utils import NumPy2TensorDataset
+from utils import NumPyArray2TensorDataset
 from Global21cmKAN import __path__
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -13,71 +14,164 @@ print("Device: ", device)
 # Set default torch type to float64
 torch.set_default_dtype(torch.float64)
 
+# specify KAN model architecture and configs for training on the ARES set; see Sec 2.3 of Dorigo Jones et al. 2025
+layer_nodes = [8, 44, 44, 71, 449]
+grid_size = 7
+spline_order = 3
 num_epochs = 800
-history_size = 10  # history size for LBFGS optimizer 
-layers_hidden = [8, 44, 44, 71, 449]  # specify KAN architecture
 batch_size = 100
-print(f"layers_hidden: {layers_hidden}")
-print(f"batch_size: {batch_size}")
-print(f"num_epochs: {num_epochs}")
+#history_size = 10  # history size for LBFGS optimizer 
+print(f"nodes in each layer: {layer_nodes}")
+print(f"number of grid intervals in B-splines: {grid_size}")
+print(f"order of splines in B-splines: {spline_order}")
+print(f"number of training epochs: {num_epochs}")
+print(f"training batch size: {batch_size}")
 
+# define paths of the saved trained 21cmKAN networks and min/max training set values used for preprocessing
 PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
 model_save_path = PATH+"models/emulator_ARES.pth"
-data_path = PATH+"/data/"
+train_mins_ARES = np.load(PATH+"models/train_mins_ARES.npy")
+train_maxs_ARES = np.load(PATH+"models/train_maxs_ARES.npy")
 
-# Create training and validation Datasets 
-train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_ARES.npy', 
-                                    targets_npy_file=data_path + 'y_train_ARES.npy')
-
-val_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_val_ARES.npy', 
-                                  targets_npy_file=data_path + 'y_val_ARES.npy')                               
-
-# Create training DataLoader
-train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-
-# Grab validation data and put it on the GPU 
-# TODO: This does not make sense, we should not use Dataset for this, but is ok for now
-X_val_ARES = torch.from_numpy(val_dataset.features)
-y_val_ARES = torch.from_numpy(val_dataset.targets)
-X_val_ARES = X_val_ARES.to(device)
-y_val_ARES = y_val_ARES.to(device)
-
-X_train_ARES = torch.from_numpy(train_dataset.features)
-y_train_ARES = torch.from_numpy(train_dataset.targets)
-X_train_ARES = X_train_ARES.to(device)
-y_train_ARES = y_train_ARES.to(device)
-
-# Load in unnormalized test data and data needed to transform the output of the model
-train_maxs_ARES = np.load(data_path + 'train_maxs_ARES.npy')
-train_mins_ARES = np.load(data_path + 'train_mins_ARES.npy')
-X_test_ARES_true = np.load(data_path + 'X_test_true_ARES.npy')
-y_test_ARES_true = np.load(data_path + 'signals_ARES_true.npy')
-
-# Calculate the absolute maximum for each signal's frequency channel value
-max_abs = torch.abs(y_val_ARES).min(dim=1)[0]
-
-#PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmLSTM/"
-#PATH = '/projects/jodo2960/KAN/21cmKAN/'
 z_list = np.linspace(5.1, 49.9, 449) # list of redshifts for ARES signals; equiv to np.arange(5.1, 50, 0.1)
 vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
-#with h5py.File(PATH + 'dataset_ARES.h5', "r") as f:
-#    print("Keys: %s" % f.keys())
-#    par_train = np.asarray(f['train_data'])[()]
-#    par_val = np.asarray(f['val_data'])[()]
-#    par_test = np.asarray(f['test_data'])[()]
-#    signal_train = np.asarray(f['train_labels'])[()]
-#    signal_val = np.asarray(f['val_labels'])[()]
-#    signal_test = np.asarray(f['test_labels'])[()]
-#f.close()
+# Load in unnormalized training, validation, and test data
+with h5py.File(PATH + 'dataset_ARES.h5', "r") as f:
+    print("Keys: %s" % f.keys())
+    par_train = np.asarray(f['train_data'])[()]
+    par_val = np.asarray(f['val_data'])[()]
+    X_test_ARES_true = np.asarray(f['test_data'])[()]
+    signal_train = np.asarray(f['train_labels'])[()]
+    signal_val = np.asarray(f['val_labels'])[()]
+    y_test_ARES_true = np.asarray(f['test_labels'])[()]
+f.close()
 
-def model(layers_hidden, name=None):
+# preprocess/normalize input physical parameters values of training and validation sets
+unproc_c_X_train = params_train[:,0].copy() # c_X, normalization of X-ray luminosity-SFR relation
+unproc_T_min_train = params_train[:,2].copy() # T_min, minimum temperature of star-forming halos
+unproc_f_s_train = params_train[:,4].copy() # f_*,0, peak star formation efficiency 
+unproc_M_p_train = params_train[:,5].copy() # M_p, dark matter halo mass at f_*,0
+unproc_c_X_train = np.log10(unproc_c_X_train)
+unproc_T_min_train = np.log10(unproc_T_min_train)
+unproc_f_s_train = np.log10(unproc_f_s_train)
+unproc_M_p_train = np.log10(unproc_M_p_train)
+parameters_log_train = np.empty(params_train.shape)
+parameters_log_train[:,0] = unproc_c_X_train
+parameters_log_train[:,1] = params_train[:,1].copy()
+parameters_log_train[:,2] = unproc_T_min_train
+parameters_log_train[:,3] = params_train[:,3].copy()
+parameters_log_train[:,4] = unproc_f_s_train
+parameters_log_train[:,5] = unproc_M_p_train
+parameters_log_train[:,6] = params_train[:,6].copy()
+parameters_log_train[:,7] = params_train[:,7].copy()
+
+unproc_c_X_val = params_val[:,0].copy() # c_X, normalization of X-ray luminosity-SFR relation
+unproc_T_min_val = params_val[:,2].copy() # T_min, minimum temperature of star-forming halos
+unproc_f_s_val = params_val[:,4].copy() # f_*,0, peak star formation efficiency 
+unproc_M_p_val = params_val[:,5].copy() # M_p, dark matter halo mass at f_*,0
+unproc_c_X_val = np.log10(unproc_c_X_val)
+unproc_T_min_val = np.log10(unproc_T_min_val)
+unproc_f_s_val = np.log10(unproc_f_s_val)
+unproc_M_p_val = np.log10(unproc_M_p_val)
+parameters_log_val = np.empty(params_val.shape)
+parameters_log_val[:,0] = unproc_c_X_val
+parameters_log_val[:,1] = params_val[:,1].copy()
+parameters_log_val[:,2] = unproc_T_min_val
+parameters_log_val[:,3] = params_val[:,3].copy()
+parameters_log_val[:,4] = unproc_f_s_val
+parameters_log_val[:,5] = unproc_M_p_val
+parameters_log_val[:,6] = params_val[:,6].copy()
+parameters_log_val[:,7] = params_val[:,7].copy()
+
+N_proc_train = np.shape(parameters_log_train)[0] # number of signals (i.e., parameter sets) to process
+p_train = np.shape(par_train)[1] # number of input parameters (# of physical params)
+proc_params_train = np.zeros((N_proc_train,p_train))
+
+N_proc_val = np.shape(parameters_log_val)[0] # number of signals (i.e., parameter sets) to process
+p_val = np.shape(par_val)[1] # number of input parameters (# of physical params)
+proc_params_val = np.zeros((N_proc_val,p_val))
+
+for i in range(p_train):
+    x_train = parameters_log_train[:,i]
+    proc_params_train[:,i] = (x_train-train_mins_ARES[i])/(train_maxs_ARES[i]-train_mins_ARES[i])
+
+for i in range(p_val):
+    x_val = parameters_log_val[:,i]
+    proc_params_val[:,i] = (x_val-train_mins_ARES[i])/(train_maxs_ARES[i]-train_mins_ARES[i])
+
+#X_train_ARES = torch.from_numpy(proc_params_train)
+X_train_ARES = proc_params_train.copy()
+proc_params_train = 0
+par_train = 0
+#X_train_ARES = X_train_ARES.to(device)
+
+X_val_ARES = torch.from_numpy(proc_params_val)
+proc_params_val = 0
+par_val = 0
+X_val_ARES = X_val_ARES.to(device)
+
+# preprocess/normalize signals (dT_b) in training and validaton sets
+proc_signals_train = signal_train.copy()
+proc_signals_train = (signal_train - train_mins_ARES[-1])/(train_maxs_ARES[-1]-train_mins_ARES[-1])  # global Min-Max normalization
+proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
+#y_train_ARES = torch.from_numpy(proc_signals_train)
+y_train_ARES = proc_signals_train.copy()
+proc_signals_train = 0
+signal_train = 0
+#y_train_ARES = y_train_ARES.to(device)
+
+proc_signals_val = signal_val.copy()
+proc_signals_val = (signal_val - train_mins_ARES[-1])/(train_maxs_ARES[-1]-train_mins_ARES[-1])  # global Min-Max normalization
+proc_signals_val = proc_signals_val[:,::-1] # flip signals to be from high-z to low-z
+y_val_ARES = torch.from_numpy(proc_signals_val.copy())
+proc_signals_val = 0
+signal_val = 0
+y_val_ARES = y_val_ARES.to(device)
+
+# Calculate the absolute minimum value of each normalized validation set signal, used to compute relative error
+min_abs = torch.abs(y_val_ARES).min(dim=1)[0]
+
+# Create normalized training Dataset and DataLoader
+train_dataset = NumPyArray2TensorDataset(features_npy=X_train_ARES, targets_npy=y_train_ARES)
+train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+
+# old code TODO: remove
+#PATH = "/projects/jodo2960/KAN/21cmKAN/"
+#data_path = PATH+"data/"
+#train_maxs_ARES = np.load(data_path + 'train_maxs_ARES.npy')
+#train_mins_ARES = np.load(data_path + 'train_mins_ARES.npy')
+#X_test_ARES_true = np.load(data_path + 'X_test_true_ARES.npy')
+#y_test_ARES_true = np.load(data_path + 'signals_ARES_true.npy')
+#train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_ARES.npy', 
+#                                    targets_npy_file=data_path + 'y_train_ARES.npy')
+#val_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_val_ARES.npy', 
+#                                  targets_npy_file=data_path + 'y_val_ARES.npy')
+# Grab validation data and put it on the GPU 
+# TODO: This does not make sense, we should not use Dataset for this, but is ok for now
+#X_val_ARES = torch.from_numpy(val_dataset.features)
+#y_val_ARES = torch.from_numpy(val_dataset.targets)
+#X_val_ARES = X_val_ARES.to(device)
+#y_val_ARES = y_val_ARES.to(device)
+#X_train_ARES = torch.from_numpy(train_dataset.features)
+#y_train_ARES = torch.from_numpy(train_dataset.targets)
+#X_train_ARES = X_train_ARES.to(device)
+#y_train_ARES = y_train_ARES.to(device)
+
+def model(layers_hidden=layer_nodes, grid_size=grid_size, spline_order=spline_order, name=None):
     """
     Generate a 21cmKAN model
 
     Parameters
     ----------
-    layers_hidden : array
-        array of nodes in each layer (input layer, three hidden layers, output layer)
+    layers_hidden : np.ndarray
+        array containing the number of nodes in each network layer
+        first value is the number of input layer nodes. Default: 8, for 8 physical parameters in the ARES set
+        next three values are the number of nodes in each hidden layer. Default: 44, 44, 71
+        last value is the number of output layer nodes. Default: 449, for 449 frequencies/redshifts in the ARES set
+    grid_size : int
+        number of grid intervals in parameterized B-spline activation functions. Default: 7
+    spline_order : int
+        order of individual splines in parameterized B-spline activation functions. Default: 3
     name : str or None
         Name of the model. Default : None
 
@@ -87,7 +181,7 @@ def model(layers_hidden, name=None):
         The generated model
     """
 
-    model = KAN(layers_hidden=layers_hidden, grid_size=7, spline_order=3) #model.to(device)
+    model = KAN(layers_hidden, grid_size, spline_order)
     return model
 
 def frequency(z):
@@ -126,7 +220,7 @@ def redshift(nu):
 
 def error(true_signal, emulated_signal, relative=True, nu=None, nu_low=None, nu_high=None):
     """
-    Compute the relative rms error (Eq. 3 in DJ+24) between the true and emulated signal(s)
+    Compute the relative rms error (Eq. 3 in DJ+25) between the true and emulated signal(s)
 
     Parameters
     ----------
@@ -192,22 +286,22 @@ class Emulate:
         frequencies=None):
         """
         The emulator class for building, training, and using 21cmKAN to emulate ARES signals 
-        The default parameters are for training/testing 21cmKAN on the ARES set described in Section 2.2 of DJ+24
+        The default parameters are for training/testing 21cmKAN on the ARES set described in Section 2.2 of DJ+25
 
         Parameters
         ----------
         par_train : np.ndarray
-            Parameters in training set
+            Parameters in training set (normalized, used in train() via train_dataloader)
         par_val : np.ndarray
-            Parameters in validation set
+            Parameters in validation set (normalized, used in train())
         par_test : np.ndarray
-            Parameters in test set
+            Parameters in test set (unnormalized, used in test_error())
         signal_train : np.ndarray
-            Signals in training set
+            Signals in training set (normalized, used in train() via train_dataloader)
         signal_val : np.ndarray
-            Signals in validation set
+            Signals in validation set (normalized, used in train())
         signal_test : np.ndarray
-            Signals in test set
+            Signals in test set (unnormalized, used in test_error())
         redshifts : np.ndarray or None
             Array of redshifts corresponding to each signal
         frequencies : np.ndarray or None
@@ -240,7 +334,7 @@ class Emulate:
         -------
         load_model : load an existing instance of 21cmKAN trained on ARES data
         train : train the emulator on ARES data
-        predict : use the emulator to predict global signals from input physical parameters
+        predict : use the emulator to predict global signal(s) from input physical parameters
         test_error : compute the rms error of the emulator evaluated on the test set
         save : save the model class instance with all attributes
         """
@@ -254,7 +348,7 @@ class Emulate:
         self.par_labels = [r'$c_X$', r'$f_{\rm esc}$', r'${T_{\rm min}}$', r'$\log_{10}{N_{H I}}$',
                            r'$f_{\star, 0}$',r'$M_p$',r'$\gamma_{lo}$', r'$\gamma_{hi}$']
 
-        self.emulator = model(layers_hidden, name="emulator_ARES")
+        self.emulator = model(layer_nodes, grid_size, spline_order, name="emulator_ARES")
 
         self.train_mins = train_mins_ARES
         self.train_maxs = train_maxs_ARES
@@ -269,9 +363,9 @@ class Emulate:
 
     def load_model(self, model_path=model_save_path):
         """
-        Load a saved model instance of 21cmKAN trained on the ARES data set.
-        The instance of 21cmKAN trained on ARES included in this repository is the one
-        used to perform nested sampling analyses in DJ+25
+        Load a saved model instance of 21cmKAN trained on ARES data.
+        The instance of 21cmKAN trained on ARES included in this repository is
+        the same one used to perform nested sampling analyses in DJ+25 (Section 3.3)
 
         Parameters
         ----------
@@ -292,9 +386,11 @@ class Emulate:
         Parameters
         ----------
         epochs : int
-            Number of epochs to train for the given batch_size
+            Number of epochs to train the network for the given batch_size
+            Default : 800
         batch_size : int
-            Number of signals in each minibatch trained on
+            Number of signals whose loss values are averaged at a time to update the network weights during each epoch
+            Default : 100
         callbacks : list of tf.keras.callbacks.Callback
             Callbacks to pass to the training loop. Default : []
         verbose : 0, 1, 2
@@ -308,7 +404,6 @@ class Emulate:
            Validation set loss values for each epoch
         """
         optimizer = optim.AdamW(self.emulator.parameters(), lr=1e-3, weight_decay=1e-4) # Define optimizer
-
         for epoch in range(num_epochs):
             self.emulator.train()
             for batch_idx, (inputs, targets) in enumerate(train_dataloader):
@@ -325,19 +420,19 @@ class Emulate:
 
             self.emulator.eval()
             with torch.no_grad():
-                val_pred = self.emulator(X_val_ARES)
-                sqrt_MSE = torch.sqrt(torch.mean((val_pred-y_val_ARES)**2, dim=1))
-                error = (sqrt_MSE/max_abs)*100
-                mean_error = torch.mean(error)
-                max_error = error.max()
+                val_pred = self.emulator(self.par_val)
+                val_loss = torch.mean((val_pred-self.signal_val)**2)
+                # code to compute the normalized validation set relative RMSE, if desired to print along with loss
+                #RMSE = torch.sqrt(val_loss)
+                #rel_error = (RMSE/min_abs)*100
+                #mean_rel_error = torch.mean(rel_error)
+                #max_rel_error = rel_error.max()
+            
+            # code to update the learning rate, if desired: scheduler.step() ; scheduler.step(max_error)
+            print(f"Epoch: {epoch + 1}, Validation Loss: {val_loss}, Training Loss: {loss}")
 
-            # Update learning rate 
-            # scheduler.step()
-            # scheduler.step(max_error)
-            print(f"Epoch: {epoch + 1}, Mean Error: {mean_error}, Max Error: {max_error}, Loss: {loss}")
-
+        # save the trained network; overwrites the saved network included in the repository; update model_save_path if this is not desired
         torch.save(self.emulator, model_save_path)
-
         return loss
 
     def predict(self, params):
@@ -385,6 +480,8 @@ class Emulate:
 
         proc_params_test = torch.from_numpy(proc_params)
         proc_params = 0
+        params = 0
+        parameters_log = 0
         proc_params_test = proc_params_test.to(device)
 
         self.emulator.eval()
