@@ -125,28 +125,6 @@ min_abs = torch.abs(y_val_21cmGEM).min(dim=1)[0]
 train_dataset = NumPyArray2TensorDataset(features_npy=X_train_21cmGEM, targets_npy=y_train_21cmGEM)
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
-# old code TODO: remove
-#PATH = "/projects/jodo2960/KAN/21cmKAN/"
-#data_path = PATH+"data/"
-#train_maxs_21cmGEM = np.load(data_path + 'train_maxs_21cmGEM.npy')
-#train_mins_21cmGEM = np.load(data_path + 'train_mins_21cmGEM.npy')
-#X_test_21cmGEM_true = np.load(data_path + 'X_test_true_21cmGEM.npy')
-#y_test_21cmGEM_true = np.load(data_path + 'signals_21cmGEM_true.npy')
-#train_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_train_21cmGEM.npy', 
-#                                    targets_npy_file=data_path + 'y_train_21cmGEM.npy')
-#val_dataset = NumPy2TensorDataset(features_npy_file=data_path + 'X_val_21cmGEM.npy', 
-#                                  targets_npy_file=data_path + 'y_val_21cmGEM.npy')
-# Grab validation data and put it on the GPU 
-# TODO: This does not make sense, we should not use Dataset for this, but is ok for now
-#X_val_21cmGEM = torch.from_numpy(val_dataset.features)
-#y_val_21cmGEM = torch.from_numpy(val_dataset.targets)
-#X_val_21cmGEM = X_val_21cmGEM.to(device)
-#y_val_21cmGEM = y_val_21cmGEM.to(device)
-#X_train_21cmGEM = torch.from_numpy(train_dataset.features)
-#y_train_21cmGEM = torch.from_numpy(train_dataset.targets)
-#X_train_21cmGEM = X_train_21cmGEM.to(device)
-#y_train_21cmGEM = y_train_21cmGEM.to(device)
-
 def model(layers_hidden=layer_nodes, grid_size=grid_size, spline_order=spline_order, name=None):
     """
     Generate a 21cmKAN model
@@ -406,7 +384,6 @@ class Emulate:
                     pred = self.emulator(inputs)
                     train_loss = torch.mean((pred-targets)**2)
                     train_loss.backward()
-                    train_losses.append(train_loss)
                     return train_loss
                 optimizer.step(closure)
 
@@ -414,7 +391,6 @@ class Emulate:
             with torch.no_grad():
                 val_pred = self.emulator(self.par_val)
                 val_loss = torch.mean((val_pred-self.signal_val)**2)
-                val_losses.append(val_loss)
                 # code to compute the normalized validation set relative RMSE, if desired to print along with loss
                 #RMSE = torch.sqrt(val_loss)
                 #rel_error = (RMSE/min_abs)*100
@@ -423,6 +399,8 @@ class Emulate:
             
             # code to update the learning rate, if desired: scheduler.step() ; scheduler.step(max_error)
             print(f"Epoch: {epoch + 1}, Training Loss: {train_loss}, Validation Loss: {val_loss}")
+            train_losses.append(train_loss)
+            val_losses.append(val_loss)
 
         # save the trained network; overwrites the saved network included in the repository; update model_save_path if this is not desired
         torch.save(self.emulator, model_save_path)
