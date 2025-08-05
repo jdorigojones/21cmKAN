@@ -4,30 +4,25 @@ from torch.utils.data import Dataset
 
 class NumPyArray2TensorDataset(Dataset):
     def __init__(self, features_npy, targets_npy):
-        # Handle both numpy arrays and tensors
-        if isinstance(features_npy, torch.Tensor):
-            self.features = features_npy
-        else:
-            self.features = torch.from_numpy(features_npy)
-            
-        if isinstance(targets_npy, torch.Tensor):
-            self.targets = targets_npy
-        else:
-            self.targets = torch.from_numpy(targets_npy)
+        self.features = features_npy
+        self.targets = targets_npy
         
     def __len__(self):
         # Return the number of samples in the dataset
         return len(self.targets)
     
     def __getitem__(self, idx):
-        # Return tensor samples directly (no conversion needed)
-        features_tensor = self.features[idx]
-        targets_tensor = self.targets[idx]
+
+        # Convert feature sample to a PyTorch tensor
+        features_tensor = torch.from_numpy(self.features[idx])
+
+        # Convert targets sample to a PyTorch tensor
+        targets_tensor = torch.from_numpy(self.targets[idx])
+
         return features_tensor, targets_tensor
 
 class NumPy2TensorDataset(Dataset):
     def __init__(self, features_npy_file, targets_npy_file):
-        # Load full numpy array into memory. TODO: could put all data in 1 npy file 
         self.features = np.load(features_npy_file)
         self.targets = np.load(targets_npy_file)  
         
