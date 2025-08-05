@@ -47,41 +47,41 @@ with h5py.File(PATH + 'dataset_ARES.h5', "r") as f:
 f.close()
 
 # preprocess/normalize input physical parameters values of training and validation sets
-unproc_c_X_train = params_train[:,0].copy() # c_X, normalization of X-ray luminosity-SFR relation
-unproc_T_min_train = params_train[:,2].copy() # T_min, minimum temperature of star-forming halos
-unproc_f_s_train = params_train[:,4].copy() # f_*,0, peak star formation efficiency 
-unproc_M_p_train = params_train[:,5].copy() # M_p, dark matter halo mass at f_*,0
+unproc_c_X_train = par_train[:,0].copy() # c_X, normalization of X-ray luminosity-SFR relation
+unproc_T_min_train = par_train[:,2].copy() # T_min, minimum temperature of star-forming halos
+unproc_f_s_train = par_train[:,4].copy() # f_*,0, peak star formation efficiency 
+unproc_M_p_train = par_train[:,5].copy() # M_p, dark matter halo mass at f_*,0
 unproc_c_X_train = np.log10(unproc_c_X_train)
 unproc_T_min_train = np.log10(unproc_T_min_train)
 unproc_f_s_train = np.log10(unproc_f_s_train)
 unproc_M_p_train = np.log10(unproc_M_p_train)
-parameters_log_train = np.empty(params_train.shape)
+parameters_log_train = np.empty(par_train.shape)
 parameters_log_train[:,0] = unproc_c_X_train
-parameters_log_train[:,1] = params_train[:,1].copy()
+parameters_log_train[:,1] = par_train[:,1].copy()
 parameters_log_train[:,2] = unproc_T_min_train
-parameters_log_train[:,3] = params_train[:,3].copy()
+parameters_log_train[:,3] = par_train[:,3].copy()
 parameters_log_train[:,4] = unproc_f_s_train
 parameters_log_train[:,5] = unproc_M_p_train
-parameters_log_train[:,6] = params_train[:,6].copy()
-parameters_log_train[:,7] = params_train[:,7].copy()
+parameters_log_train[:,6] = par_train[:,6].copy()
+parameters_log_train[:,7] = par_train[:,7].copy()
 
-unproc_c_X_val = params_val[:,0].copy() # c_X, normalization of X-ray luminosity-SFR relation
-unproc_T_min_val = params_val[:,2].copy() # T_min, minimum temperature of star-forming halos
-unproc_f_s_val = params_val[:,4].copy() # f_*,0, peak star formation efficiency 
-unproc_M_p_val = params_val[:,5].copy() # M_p, dark matter halo mass at f_*,0
+unproc_c_X_val = par_val[:,0].copy() # c_X, normalization of X-ray luminosity-SFR relation
+unproc_T_min_val = par_val[:,2].copy() # T_min, minimum temperature of star-forming halos
+unproc_f_s_val = par_val[:,4].copy() # f_*,0, peak star formation efficiency 
+unproc_M_p_val = par_val[:,5].copy() # M_p, dark matter halo mass at f_*,0
 unproc_c_X_val = np.log10(unproc_c_X_val)
 unproc_T_min_val = np.log10(unproc_T_min_val)
 unproc_f_s_val = np.log10(unproc_f_s_val)
 unproc_M_p_val = np.log10(unproc_M_p_val)
-parameters_log_val = np.empty(params_val.shape)
+parameters_log_val = np.empty(par_val.shape)
 parameters_log_val[:,0] = unproc_c_X_val
-parameters_log_val[:,1] = params_val[:,1].copy()
+parameters_log_val[:,1] = par_val[:,1].copy()
 parameters_log_val[:,2] = unproc_T_min_val
-parameters_log_val[:,3] = params_val[:,3].copy()
+parameters_log_val[:,3] = par_val[:,3].copy()
 parameters_log_val[:,4] = unproc_f_s_val
 parameters_log_val[:,5] = unproc_M_p_val
-parameters_log_val[:,6] = params_val[:,6].copy()
-parameters_log_val[:,7] = params_val[:,7].copy()
+parameters_log_val[:,6] = par_val[:,6].copy()
+parameters_log_val[:,7] = par_val[:,7].copy()
 
 N_proc_train = np.shape(parameters_log_train)[0] # number of signals (i.e., parameter sets) to process
 p_train = np.shape(par_train)[1] # number of input parameters (# of physical params)
