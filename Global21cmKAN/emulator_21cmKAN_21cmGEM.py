@@ -399,8 +399,8 @@ class Emulate:
             
             # code to update the learning rate, if desired: scheduler.step() ; scheduler.step(max_error)
             print(f"Epoch: {epoch + 1}, Training Loss: {train_loss}, Validation Loss: {val_loss}")
-            train_losses.append(train_loss)
-            val_losses.append(val_loss)
+            train_losses.append(train_loss.item())
+            val_losses.append(val_loss.item())
 
         # save the trained network; overwrites the saved network included in the repository; update model_save_path if this is not desired
         torch.save(self.emulator, model_save_path)
