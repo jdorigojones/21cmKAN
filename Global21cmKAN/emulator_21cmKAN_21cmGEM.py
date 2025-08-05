@@ -88,10 +88,11 @@ for i in range(p_val):
     x_val = parameters_log_val[:,i]
     proc_params_val[:,i] = (x_val-train_mins_21cmGEM[i])/(train_maxs_21cmGEM[i]-train_mins_21cmGEM[i])
 
-X_train_21cmGEM = torch.from_numpy(proc_params_train)
+#X_train_21cmGEM = torch.from_numpy(proc_params_train)
+X_train_21cmGEM = proc_params_train.copy()
 proc_params_train = 0
 par_train = 0
-X_train_21cmGEM = X_train_21cmGEM.to(device)
+#X_train_21cmGEM = X_train_21cmGEM.to(device)
 
 X_val_21cmGEM = torch.from_numpy(proc_params_val)
 proc_params_val = 0
@@ -102,15 +103,16 @@ X_val_21cmGEM = X_val_21cmGEM.to(device)
 proc_signals_train = signal_train.copy()
 proc_signals_train = (signal_train - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])  # global Min-Max normalization
 proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
-y_train_21cmGEM = torch.from_numpy(proc_signals_train)
+#y_train_21cmGEM = torch.from_numpy(proc_signals_train)
+y_train_21cmGEM = proc_signals_train.copy()
 proc_signals_train = 0
 signal_train = 0
-y_train_21cmGEM = y_train_21cmGEM.to(device)
+#y_train_21cmGEM = y_train_21cmGEM.to(device)
 
 proc_signals_val = signal_val.copy()
 proc_signals_val = (signal_val - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])  # global Min-Max normalization
 proc_signals_val = proc_signals_val[:,::-1] # flip signals to be from high-z to low-z
-y_val_21cmGEM = torch.from_numpy(proc_signals_val)
+y_val_21cmGEM = torch.from_numpy(proc_signals_val.copy())
 proc_signals_val = 0
 signal_val = 0
 y_val_21cmGEM = y_val_21cmGEM.to(device)
@@ -408,13 +410,15 @@ class Emulate:
             self.emulator.eval()
             with torch.no_grad():
                 val_pred = self.emulator(self.par_val)
-                RMSE = torch.sqrt(torch.mean((val_pred-self.signal_val)**2, dim=1))
-                rel_error = (RMSE/min_abs)*100
-                mean_rel_error = torch.mean(rel_error)
-                max_rel_error = rel_error.max()
-
+                val_loss = torch.mean((val_pred-self.signal_val)**2)
+                # code to compute the normalized validation set relative RMSE, if desired to print along with loss
+                #RMSE = torch.sqrt(val_loss)
+                #rel_error = (RMSE/min_abs)*100
+                #mean_rel_error = torch.mean(rel_error)
+                #max_rel_error = rel_error.max()
+            
             # code to update the learning rate, if desired: scheduler.step() ; scheduler.step(max_error)
-            print(f"Epoch: {epoch + 1}, Mean Relative Error: {mean_rel_error}, Max Relative Error: {max_rel_error}, Training MSE Loss: {loss}")
+            print(f"Epoch: {epoch + 1}, Validation Loss: {val_loss}, Training Loss: {loss}")
 
         # save the trained network; overwrites the saved network included in the repository; update model_save_path if this is not desired
         torch.save(self.emulator, model_save_path)
