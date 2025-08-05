@@ -1,16 +1,13 @@
 '''
-Name: perses/models/KANSignalModel.py
-Author: Joshua J. Hibbard & Johnny Dorigo Jones
-Date: May 2022
-Edited April 2025 to be for 21cmKAN (deleted a lot from original)
-Description: A model class which wraps around the 21cmKAN module for various signal or 
-			 systematic model evaluations. 
+Name: 21cmKAN/scripts/KANSignalModel_21cmGEM.py
+Author: Johnny Dorigo Jones
+Original: May 2022, Edited: August 2025 to be for 21cmKAN trained on the 21cmGEM data set
+Description: A model class which wraps around the 21cmKAN module for various signal or systematic model evaluations. 
 '''
 from __future__ import division
 import time
 import numpy as np
 from pylinex import LoadableModel
-#from ..util import bool_types, sequence_types, create_hdf5_dataset, get_hdf5_value
 import Global21cmKAN as Global21cmKAN
 from Global21cmKAN.eval_21cmKAN_21cmGEM import evaluate
 
