@@ -63,7 +63,6 @@ parameters_log_train[:,4] = unproc_f_s_train
 parameters_log_train[:,5] = unproc_M_p_train
 parameters_log_train[:,6] = par_train[:,6].copy()
 parameters_log_train[:,7] = par_train[:,7].copy()
-
 unproc_c_X_val = par_val[:,0].copy() # c_X, normalization of X-ray luminosity-SFR relation
 unproc_T_min_val = par_val[:,2].copy() # T_min, minimum temperature of star-forming halos
 unproc_f_s_val = par_val[:,4].copy() # f_*,0, peak star formation efficiency 
@@ -81,13 +80,11 @@ parameters_log_val[:,4] = unproc_f_s_val
 parameters_log_val[:,5] = unproc_M_p_val
 parameters_log_val[:,6] = par_val[:,6].copy()
 parameters_log_val[:,7] = par_val[:,7].copy()
-
 N_proc_train = np.shape(parameters_log_train)[0] # number of signals (i.e., parameter sets) to process
+N_proc_val = np.shape(parameters_log_val)[0]
 p_train = np.shape(par_train)[1] # number of input parameters (# of physical params)
+p_val = np.shape(par_val)[1]
 proc_params_train = np.zeros((N_proc_train,p_train))
-
-N_proc_val = np.shape(parameters_log_val)[0] # number of signals (i.e., parameter sets) to process
-p_val = np.shape(par_val)[1] # number of input parameters (# of physical params)
 proc_params_val = np.zeros((N_proc_val,p_val))
 
 for i in range(p_train):
@@ -99,27 +96,27 @@ for i in range(p_val):
     proc_params_val[:,i] = (x_val-train_mins_ARES[i])/(train_maxs_ARES[i]-train_mins_ARES[i])
 
 X_train_ARES = proc_params_train.copy()
+X_val_ARES = torch.from_numpy(proc_params_val)
+X_val_ARES = X_val_ARES.to(device)
 proc_params_train = 0
 par_train = 0
-X_val_ARES = torch.from_numpy(proc_params_val)
 proc_params_val = 0
 par_val = 0
-X_val_ARES = X_val_ARES.to(device)
 
 # now preprocess/normalize signals (dT_b) in training and validaton sets
 proc_signals_train = signal_train.copy()
 proc_signals_train = (signal_train - train_mins_ARES[-1])/(train_maxs_ARES[-1]-train_mins_ARES[-1])  # global Min-Max normalization
 proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
 y_train_ARES = proc_signals_train.copy()
-proc_signals_train = 0
-signal_train = 0
 proc_signals_val = signal_val.copy()
 proc_signals_val = (signal_val - train_mins_ARES[-1])/(train_maxs_ARES[-1]-train_mins_ARES[-1])  # global Min-Max normalization
 proc_signals_val = proc_signals_val[:,::-1] # flip signals to be from high-z to low-z
 y_val_ARES = torch.from_numpy(proc_signals_val.copy())
+y_val_ARES = y_val_ARES.to(device)
 proc_signals_val = 0
 signal_val = 0
-y_val_ARES = y_val_ARES.to(device)
+proc_signals_train = 0
+signal_train = 0
 
 # Create normalized training Dataset and DataLoader
 train_dataset = NumPyArray2TensorDataset(features_npy=X_train_ARES, targets_npy=y_train_ARES)
