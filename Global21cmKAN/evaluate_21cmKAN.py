@@ -32,7 +32,7 @@ class evaluate_on_21cmGEM():
         
         self.model = kwargs.pop('model', None)
         if self.model is None:
-            self.model =  torch.load(self.model_dir+'21cmKAN_model_21cmGEM_default2_11.pth', weights_only=False) # emulator_21cmGEM.pth
+            self.model =  torch.load(self.model_dir+'emulator_21cmGEM.pth', weights_only=False)
             self.model.to(device)
     def __call__(self, parameters):
         if len(np.shape(parameters)) == 1:
