@@ -50,13 +50,13 @@ pip install pandas
 git clone https://github.com/jdorigojones/21cmKAN
 cd 21cmKAN
 python -m pip install .
+cd ..
 ```
 
 ## The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses:
 
 8. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
 ```
-cd ..
 pip install pymultinest
 pip install scikit-learn
 pip install matplotlib
@@ -74,15 +74,14 @@ cd ..
 cd ..
 git clone https://github.com/JohannesBuchner/PyMultiNest/
 cd PyMultiNest
-python setup.py install 
+python setup.py install
+cd ..
 ```
 Test importing the library: python -c 'import pymultinest'
 Test the installation by running their demo script: python pymultinest_test.py
 
 9. Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master)
-
 ```
-cd ..
 git clone https://github.com/CU-NESS/distpy.git
 cd distpy
 python setup.py develop --user
@@ -93,7 +92,6 @@ python setup.py develop --user
 ```
 
 10. Remember to run the following path exports when using the pymultinest, distpy, and pylinex libraries
-
 ```
 export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH
 export PYLINEX=/path/to/pylinex
