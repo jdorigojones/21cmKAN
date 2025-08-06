@@ -18,22 +18,23 @@ torch.set_default_dtype(torch.float64)
 class evaluate_on_21cmGEM(): 
     def __init__(self, **kwargs):
         for key, values in kwargs.items():
-            if key not in set(['model_dir', 'model']):
+            if key not in set(['model_path', 'model']):
                 raise KeyError("Unexpected keyword argument in evaluate()")
-                
-        self.model_dir = kwargs.pop('model_dir', f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/")
-        if type(self.model_dir) is not str:
-            raise TypeError("'model_dir' must be a sting.")
-        elif self.model_dir.endswith('/') is False:
-            raise KeyError("'model_dir' must end with '/'.")
-        
-        self.train_mins = np.load(self.model_dir+'train_mins_21cmGEM.npy')
-        self.train_maxs = np.load(self.model_dir+'train_maxs_21cmGEM.npy')
-        
+
+        # Default model path
+        default_model_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/emulator_21cmGEM.pth"
+        model_path = kwargs.pop('model_path', default_model_path)
+
+        # Load normalization data from the same directory as the model
+        model_dir = os.path.dirname(model_path) + '/'
+        self.train_mins = np.load(model_dir + 'train_mins_21cmGEM.npy')
+        self.train_maxs = np.load(model_dir + 'train_maxs_21cmGEM.npy')
+
         self.model = kwargs.pop('model', None)
         if self.model is None:
-            self.model =  torch.load(self.model_dir+'emulator_21cmGEM.pth', weights_only=False)
+            self.model = torch.load(model_path, weights_only=False)
             self.model.to(device)
+            
     def __call__(self, parameters):
         if len(np.shape(parameters)) == 1:
             parameters = np.expand_dims(parameters, axis=0) # if doing one signal at a time
@@ -50,7 +51,6 @@ class evaluate_on_21cmGEM():
         parameters_log[:,1] = unproc_V_c
         parameters_log[:,2] = unproc_f_X
         parameters_log[:,3:] = parameters[:,3:].copy()
-        
         N_proc = np.shape(parameters_log)[0] # number of signals (i.e., parameter sets) to process
         p = np.shape(parameters)[1] # number of input parameters (# of physical params)
         proc_params = np.zeros((N_proc,p))
@@ -58,15 +58,13 @@ class evaluate_on_21cmGEM():
         for i in range(p):
             x = parameters_log[:,i]
             proc_params[:,i] = (x-self.train_mins[i])/(self.train_maxs[i]-self.train_mins[i])
-
         proc_params_test = torch.from_numpy(proc_params)
         proc_params = 0
         proc_params_test = proc_params_test.to(device)
-
+        
         self.model.eval()
         with torch.no_grad():
             result = self.model(proc_params_test) # evaluate trained instance of 21cmKAN with processed parameters
-
         result = result.cpu().detach().numpy()
         unproc_signals = result.copy()
         unproc_signals = (result*(self.train_maxs[-1]-self.train_mins[-1]))+self.train_mins[-1] # unpreprocess (i.e., denormalize) signals
@@ -80,21 +78,21 @@ class evaluate_on_21cmGEM():
 class evaluate_on_ARES(): 
     def __init__(self, **kwargs):
         for key, values in kwargs.items():
-            if key not in set(['model_dir', 'model']):
+            if key not in set(['model_path', 'model']):
                 raise KeyError("Unexpected keyword argument in evaluate()")
+
+        # Default model path
+        default_model_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/emulator_ARES.pth"
+        model_path = kwargs.pop('model_path', default_model_path)
                 
-        self.model_dir = kwargs.pop('model_dir', f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/")
-        if type(self.model_dir) is not str:
-            raise TypeError("'model_dir' must be a sting.")
-        elif self.model_dir.endswith('/') is False:
-            raise KeyError("'model_dir' must end with '/'.")
-        
-        self.train_mins = np.load(self.model_dir+'train_mins_ARES.npy')
-        self.train_maxs = np.load(self.model_dir+'train_maxs_ARES.npy')
-        
+        # Load normalization data from the same directory as the model
+        model_dir = os.path.dirname(model_path) + '/'
+        self.train_mins = np.load(model_dir + 'train_mins_ARES.npy')
+        self.train_maxs = np.load(model_dir + 'train_maxs_ARES.npy')
+
         self.model = kwargs.pop('model', None)
         if self.model is None:
-            self.model =  torch.load(self.model_dir+'emulator_ARES.pth', weights_only=False)
+            self.model = torch.load(model_path, weights_only=False)
             self.model.to(device)
     def __call__(self, parameters):
         if len(np.shape(parameters)) == 1:
@@ -117,7 +115,6 @@ class evaluate_on_ARES():
         parameters_log[:,5] = unproc_M_p
         parameters_log[:,6] = parameters[:,6].copy()
         parameters_log[:,7] = parameters[:,7].copy()
-        
         N_proc = np.shape(parameters_log)[0] # number of signals (i.e., parameter sets) to process
         p = np.shape(parameters)[1] # number of input parameters (# of physical params)
         proc_params = np.zeros((N_proc,p))
@@ -125,7 +122,6 @@ class evaluate_on_ARES():
         for i in range(p):
             x = parameters_log[:,i]
             proc_params[:,i] = (x-self.train_mins[i])/(self.train_maxs[i]-self.train_mins[i])
-
         proc_params_test = torch.from_numpy(proc_params)
         proc_params = 0
         proc_params_test = proc_params_test.to(device)
@@ -133,7 +129,6 @@ class evaluate_on_ARES():
         self.model.eval()
         with torch.no_grad():
             result = self.model(proc_params_test) # evaluate trained instance of 21cmKAN with processed parameters
-
         result = result.cpu().detach().numpy()
         unproc_signals = result.copy()
         unproc_signals = (result*(self.train_maxs[-1]-self.train_mins[-1]))+self.train_mins[-1] # unpreprocess (i.e., denormalize) signals
