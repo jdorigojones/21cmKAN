@@ -33,6 +33,7 @@ class predict_21cmGEM(LoadableModel):
    		Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
         '''
         self.parameters = parameters
+	self.model_path = model_path
         
     @property
     def parameters(self):
@@ -52,7 +53,7 @@ class predict_21cmGEM(LoadableModel):
     @property
     def neural_network_predictor(self):
         if not hasattr(self, '_neural_network_predictor'):
-            self._neural_network_predictor = evaluate_on_21cmGEM(model_path)
+            self._neural_network_predictor = evaluate_on_21cmGEM(model_path=self.model_path)
         return self._neural_network_predictor
         
     def __call__(self, parameters):
@@ -72,6 +73,7 @@ class predict_ARES(LoadableModel):
    		Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_ARES.pth"
         '''
         self.parameters = parameters
+	self.model_path = model_path
         
     @property
     def parameters(self):
@@ -91,7 +93,7 @@ class predict_ARES(LoadableModel):
     @property
     def neural_network_predictor(self):
         if not hasattr(self, '_neural_network_predictor'):
-            self._neural_network_predictor = evaluate_on_ARES(model_path)
+            self._neural_network_predictor = evaluate_on_ARES(model_path=self.model_path)
         return self._neural_network_predictor
         
     def __call__(self, parameters):
