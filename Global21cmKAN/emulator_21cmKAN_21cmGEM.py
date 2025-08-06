@@ -354,7 +354,7 @@ class Emulate:
         verbose : 0, 1, 2
             Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch. Default : 2
         model_path : str
-            The path to the saved model instance.
+            The path to the saved model instance
             Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
 
         Returns
