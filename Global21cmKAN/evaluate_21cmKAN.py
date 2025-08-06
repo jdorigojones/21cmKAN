@@ -27,8 +27,8 @@ class evaluate_on_21cmGEM():
         elif self.model_dir.endswith('/') is False:
             raise KeyError("'model_dir' must end with '/'.")
         
-        self.train_mins = np.load(self.model_dir+'/train_mins_21cmGEM.npy')
-        self.train_maxs = np.load(self.model_dir+'/train_maxs_21cmGEM.npy')
+        self.train_mins = np.load(self.model_dir+'train_mins_21cmGEM.npy')
+        self.train_maxs = np.load(self.model_dir+'train_maxs_21cmGEM.npy')
         
         self.model = kwargs.pop('model', None)
         if self.model is None:
@@ -65,7 +65,7 @@ class evaluate_on_21cmGEM():
 
         self.model.eval()
         with torch.no_grad():
-            result = self.model(proc_params_test) # evaluate trained instance of 21cmLSTM with processed parameters
+            result = self.model(proc_params_test) # evaluate trained instance of 21cmKAN with processed parameters
 
         result = result.cpu().detach().numpy()
         unproc_signals = result.copy()
@@ -132,7 +132,7 @@ class evaluate_on_ARES():
 
         self.model.eval()
         with torch.no_grad():
-            result = self.model(proc_params_test) # evaluate trained instance of 21cmLSTM with processed parameters
+            result = self.model(proc_params_test) # evaluate trained instance of 21cmKAN with processed parameters
 
         result = result.cpu().detach().numpy()
         unproc_signals = result.copy()
