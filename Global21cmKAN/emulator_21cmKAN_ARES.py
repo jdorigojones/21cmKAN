@@ -338,6 +338,7 @@ class Emulate:
         ----------
         model_path : str
             The path to the saved model instance
+            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
 
         Raises
         ------
@@ -346,7 +347,7 @@ class Emulate:
         self.emulator = torch.load(model_path, weights_only=False)
         self.emulator.to(device)
 
-    def train(self, num_epochs=num_epochs, batch_size=batch_size, callbacks=[], verbose=2, shuffle='True'):
+    def train(self, num_epochs=num_epochs, batch_size=batch_size, callbacks=[], verbose=2, model_path=model_save_path, shuffle='True'):
         """
         Train an instance of 21cmKAN on the ARES data set
 
@@ -362,6 +363,9 @@ class Emulate:
             Callbacks to pass to the training loop. Default : []
         verbose : 0, 1, 2
             Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch. Default : 2
+        model_path : str
+            The path to the saved model instance
+            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
 
         Returns
         -------
@@ -402,8 +406,9 @@ class Emulate:
             train_losses.append(train_loss.item())
             val_losses.append(val_loss.item())
 
-        # save the trained network; overwrites the saved network included in the repository; update model_save_path if this is not desired
-        torch.save(self.emulator, model_save_path)
+        # save the trained network to model_path
+        # by default this overwrites the saved network downloaded from the GitHub repository; update model_path if this is not desired
+        torch.save(self.emulator, model_path)
         return (train_losses, val_losses)
 
     def predict(self, params):
