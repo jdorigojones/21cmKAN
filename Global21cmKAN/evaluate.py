@@ -4,7 +4,7 @@
 # In[ ]:
 
 # independent script to evaluate a trained instance of 21cmKAN given input set of physical parameter values
-# used by wrapper.py to perform PyMultiNest analyses
+# imported by wrapper.py to perform PyMultiNest analyses
 # note that the Global21cmKAN.emulator.Emulate().predict() function can also be used to evaluate 21cmKAN
 
 import numpy as np
