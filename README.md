@@ -52,7 +52,7 @@ cd 21cmKAN
 python -m pip install .
 ```
 
-# The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses:
+## The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses:
 
 8. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
 ```
