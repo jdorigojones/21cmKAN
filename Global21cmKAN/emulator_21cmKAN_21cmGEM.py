@@ -5,7 +5,6 @@ import torch
 import torch.optim as optim
 from efficient_kan import KAN
 from utils import NumPy2TensorDataset, NumPyArray2TensorDataset
-from Global21cmKAN import __path__
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print("Device: ", device)
@@ -58,12 +57,12 @@ parameters_log_train[:,0] = unproc_f_s_train
 parameters_log_train[:,1] = unproc_V_c_train
 parameters_log_train[:,2] = unproc_f_X_train
 parameters_log_train[:,3:] = par_train[:,3:].copy()
-unproc_f_s_val = par_val[:,0].copy() # f_*, star formation efficiency, # preprocess input physical parameters
-unproc_V_c_val = par_val[:,1].copy() # V_c, minimum circular velocity of star-forming halos 
-unproc_f_X_val = par_val[:,2].copy() # f_X, X-ray efficiency of sources
+unproc_f_s_val = par_val[:,0].copy()
+unproc_V_c_val = par_val[:,1].copy()
+unproc_f_X_val = par_val[:,2].copy()
 unproc_f_s_val = np.log10(unproc_f_s_val)
 unproc_V_c_val = np.log10(unproc_V_c_val)
-unproc_f_X_val[unproc_f_X_val == 0] = 1e-6 # for f_X, set zero values to 1e-6 before taking log_10
+unproc_f_X_val[unproc_f_X_val == 0] = 1e-6
 unproc_f_X_val = np.log10(unproc_f_X_val)
 parameters_log_val = np.empty(par_val.shape)
 parameters_log_val[:,0] = unproc_f_s_val
@@ -72,11 +71,10 @@ parameters_log_val[:,2] = unproc_f_X_val
 parameters_log_val[:,3:] = par_val[:,3:].copy()
 
 N_proc_train = np.shape(parameters_log_train)[0] # number of signals (i.e., parameter sets) to process
+N_proc_val = np.shape(parameters_log_val)[0]
 p_train = np.shape(par_train)[1] # number of input parameters (# of physical params)
+p_val = np.shape(par_val)[1]
 proc_params_train = np.zeros((N_proc_train,p_train))
-
-N_proc_val = np.shape(parameters_log_val)[0] # number of signals (i.e., parameter sets) to process
-p_val = np.shape(par_val)[1] # number of input parameters (# of physical params)
 proc_params_val = np.zeros((N_proc_val,p_val))
         
 for i in range(p_train):
@@ -88,27 +86,27 @@ for i in range(p_val):
     proc_params_val[:,i] = (x_val-train_mins_21cmGEM[i])/(train_maxs_21cmGEM[i]-train_mins_21cmGEM[i])
 
 X_train_21cmGEM = proc_params_train.copy()
+X_val_21cmGEM = torch.from_numpy(proc_params_val)
+X_val_21cmGEM = X_val_21cmGEM.to(device)
 proc_params_train = 0
 par_train = 0
-X_val_21cmGEM = torch.from_numpy(proc_params_val)
 proc_params_val = 0
 par_val = 0
-X_val_21cmGEM = X_val_21cmGEM.to(device)
 
 # preprocess/normalize signals (dT_b) in training and validaton sets
 proc_signals_train = signal_train.copy()
 proc_signals_train = (signal_train - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])  # global Min-Max normalization
 proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
 y_train_21cmGEM = proc_signals_train.copy()
+proc_signals_val = signal_val.copy()
+proc_signals_val = (signal_val - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])
+proc_signals_val = proc_signals_val[:,::-1]
+y_val_21cmGEM = torch.from_numpy(proc_signals_val.copy())
+y_val_21cmGEM = y_val_21cmGEM.to(device)
 proc_signals_train = 0
 signal_train = 0
-proc_signals_val = signal_val.copy()
-proc_signals_val = (signal_val - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])  # global Min-Max normalization
-proc_signals_val = proc_signals_val[:,::-1] # flip signals to be from high-z to low-z
-y_val_21cmGEM = torch.from_numpy(proc_signals_val.copy())
 proc_signals_val = 0
 signal_val = 0
-y_val_21cmGEM = y_val_21cmGEM.to(device)
 
 # Calculate the absolute minimum value of each normalized validation set signal, used to compute relative error
 min_abs = torch.abs(y_val_21cmGEM).min(dim=1)[0]
