@@ -4,7 +4,7 @@ import os
 import torch 
 import torch.optim as optim
 from efficient_kan import KAN
-from utils import NumPy2TensorDataset, NumPyArray2TensorDataset
+from utils import NumPyArray2TensorDataset
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print("Device: ", device)
