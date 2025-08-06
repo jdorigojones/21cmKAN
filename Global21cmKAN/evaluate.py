@@ -61,13 +61,15 @@ class evaluate_on_21cmGEM():
         for i in range(p):
             x = parameters_log[:,i]
             proc_params[:,i] = (x-self.train_mins[i])/(self.train_maxs[i]-self.train_mins[i])
-        proc_params_test = torch.from_numpy(proc_params)
+        proc_params_input = torch.from_numpy(proc_params)
         proc_params = 0
-        proc_params_test = proc_params_test.to(device)
+        parameters = 0
+        parameters_log = 0
+        proc_params_input = proc_params_input.to(device)
         
         self.model.eval()
         with torch.no_grad():
-            result = self.model(proc_params_test) # evaluate trained instance of 21cmKAN with processed parameters
+            result = self.model(proc_params_input) # evaluate trained instance of 21cmKAN with processed parameters
         result = result.cpu().detach().numpy()
         unproc_signals = result.copy()
         unproc_signals = (result*(self.train_maxs[-1]-self.train_mins[-1]))+self.train_mins[-1] # unpreprocess (i.e., denormalize) signals
@@ -125,13 +127,15 @@ class evaluate_on_ARES():
         for i in range(p):
             x = parameters_log[:,i]
             proc_params[:,i] = (x-self.train_mins[i])/(self.train_maxs[i]-self.train_mins[i])
-        proc_params_test = torch.from_numpy(proc_params)
+        proc_params_input = torch.from_numpy(proc_params)
         proc_params = 0
-        proc_params_test = proc_params_test.to(device)
+        parameters = 0
+        parameters_log = 0
+        proc_params_input = proc_params_input.to(device)
 
         self.model.eval()
         with torch.no_grad():
-            result = self.model(proc_params_test) # evaluate trained instance of 21cmKAN with processed parameters
+            result = self.model(proc_params_input) # evaluate trained instance of 21cmKAN with processed parameters
         result = result.cpu().detach().numpy()
         unproc_signals = result.copy()
         unproc_signals = (result*(self.train_maxs[-1]-self.train_mins[-1]))+self.train_mins[-1] # unpreprocess (i.e., denormalize) signals
