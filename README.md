@@ -6,7 +6,7 @@
 
 To ensure that all packages are available, below we provide basic instructions
 for setting up an environment that is compatible with 21cmKAN. Although it is not 
-necessary, we chose to create a mamba environment. 
+necessary, we chose to create a [mamba](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html) environment. 
 
 1. Create a mamba environment named `21cm-kan-env`
 ```
