@@ -4,8 +4,7 @@ import os
 import torch 
 import torch.optim as optim
 from efficient_kan import KAN
-from utils import NumPy2TensorDataset, NumPyArray2TensorDataset
-from Global21cmKAN import __path__
+from utils import NumPyArray2TensorDataset
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print("Device: ", device)
@@ -63,10 +62,10 @@ parameters_log_train[:,4] = unproc_f_s_train
 parameters_log_train[:,5] = unproc_M_p_train
 parameters_log_train[:,6] = par_train[:,6].copy()
 parameters_log_train[:,7] = par_train[:,7].copy()
-unproc_c_X_val = par_val[:,0].copy() # c_X, normalization of X-ray luminosity-SFR relation
-unproc_T_min_val = par_val[:,2].copy() # T_min, minimum temperature of star-forming halos
-unproc_f_s_val = par_val[:,4].copy() # f_*,0, peak star formation efficiency 
-unproc_M_p_val = par_val[:,5].copy() # M_p, dark matter halo mass at f_*,0
+unproc_c_X_val = par_val[:,0].copy()
+unproc_T_min_val = par_val[:,2].copy()
+unproc_f_s_val = par_val[:,4].copy()
+unproc_M_p_val = par_val[:,5].copy()
 unproc_c_X_val = np.log10(unproc_c_X_val)
 unproc_T_min_val = np.log10(unproc_T_min_val)
 unproc_f_s_val = np.log10(unproc_f_s_val)
@@ -109,8 +108,8 @@ proc_signals_train = (signal_train - train_mins_ARES[-1])/(train_maxs_ARES[-1]-t
 proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
 y_train_ARES = proc_signals_train.copy()
 proc_signals_val = signal_val.copy()
-proc_signals_val = (signal_val - train_mins_ARES[-1])/(train_maxs_ARES[-1]-train_mins_ARES[-1])  # global Min-Max normalization
-proc_signals_val = proc_signals_val[:,::-1] # flip signals to be from high-z to low-z
+proc_signals_val = (signal_val - train_mins_ARES[-1])/(train_maxs_ARES[-1]-train_mins_ARES[-1])
+proc_signals_val = proc_signals_val[:,::-1]
 y_val_ARES = torch.from_numpy(proc_signals_val.copy())
 y_val_ARES = y_val_ARES.to(device)
 proc_signals_val = 0
