@@ -338,7 +338,7 @@ class Emulate:
         ----------
         model_path : str
             The path to the saved model instance
-            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
+            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_ARES.pth"
 
         Raises
         ------
@@ -365,7 +365,7 @@ class Emulate:
             Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch. Default : 2
         model_path : str
             The path to the saved model instance
-            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
+            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_ARES.pth"
 
         Returns
         -------
