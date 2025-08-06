@@ -8,35 +8,33 @@ To ensure that all packages are available, below we provide basic instructions
 for setting up an environment that is compatible with 21cmKAN. Although it is not 
 necessary, we chose to create a [mamba](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html) environment. 
 
-1. Create a mamba environment named `21cm-kan-env`
+1. Create a mamba environment named `21cm-kan-env` and activate it
 ```
 mamba create -n 21cm-kan-env python==3.12.8
-```
-2. Activate the environment:
-```
 mamba activate 21cm-kan-env
 ```
-3. Grab [efficient-kan](https://github.com/Blealtan/efficient-kan)
+
+2. Grab [efficient-kan](https://github.com/Blealtan/efficient-kan)
 ```
 git clone https://github.com/Blealtan/efficient-kan.git
 ```
 > [!NOTE]
 > We would like to extend a HUGE thank you to the individuals who implemented efficient-kan. Without it, creating 21cmKAN may not have been possible. 
-4. Depending on your architecture, you may need to install the CUDA version of `torch` and `torchvision` (or else it will default to the CPU version). Here we install `torch` and `torchvision` for CUDA version 12.4:
+3. Depending on your architecture, you may need to install the CUDA version of `torch` and `torchvision` (or else it will default to the CPU version). Here we install `torch` and `torchvision` for CUDA version 12.4:
 ```
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
 ```
-5. Install efficient-kan and associated dependencies into environment:
+4. Install efficient-kan and associated dependencies into environment:
 ```
 cd efficient-kan
 pip install .
 ```
-6. To perform [Ray Tune](https://docs.ray.io/en/latest/ray-overview/installation.html) Bayesian hyperparameter search, include the following libraries:
+5. To perform [Ray Tune](https://docs.ray.io/en/latest/ray-overview/installation.html) Bayesian hyperparameter search, include the following libraries:
 ```
 pip install ray[tune]
 pip install optuna
 ```
-7. If you would like to use [Pykan's](https://github.com/KindXiaoming/pykan) LBFGS optimizer, then you will 
+6. If you would like to use [Pykan's](https://github.com/KindXiaoming/pykan) LBFGS optimizer, then you will 
 need to install it (and some additional dependencies) in your environment: 
 ```
 pip install pykan
@@ -46,18 +44,16 @@ pip install matplotlib
 pip install pandas 
 ```
 
-8. Install 21cmKAN
-
+7. Install 21cmKAN
 ```
 git clone https://github.com/jdorigojones/21cmKAN
 cd 21cmKAN
 python -m pip install .
 ```
 
-The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses:
+# The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses:
 
-9. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
-
+8. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
 ```
 cd ..
 pip install pymultinest
@@ -82,7 +78,7 @@ python setup.py install
 Test importing the library: python -c 'import pymultinest'
 Test the installation by running their demo script: python pymultinest_test.py
 
-10. Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master)
+9. Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master)
 
 ```
 cd ..
@@ -95,7 +91,7 @@ cd pylinex
 python setup.py develop --user
 ```
 
-11. REMEMBER: Path exports to run when using the pymultinest, distpy, and pylinex libraries
+10. Remember to run the following path exports when using the pymultinest, distpy, and pylinex libraries
 
 ```
 export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH
