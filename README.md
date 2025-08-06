@@ -31,7 +31,7 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
 cd efficient-kan
 pip install .
 ```
-6. To perform Ray Tune Bayesian hyperparameter search, include the following libraries:
+6. To perform [Ray Tune](https://docs.ray.io/en/latest/ray-overview/installation.html) Bayesian hyperparameter search, include the following libraries:
 ```
 pip install ray[tune]
 pip install optuna
