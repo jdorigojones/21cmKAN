@@ -18,11 +18,19 @@ except:
 	# this try/except allows for python 2/3 compatible string type checking
 	basestring = str
 
+PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
+model_save_path_21cmGEM = PATH+"models/emulator_21cmGEM.pth"
+model_save_path_ARES = PATH+"models/emulator_ARES.pth"
+
 class predict_21cmGEM(LoadableModel):
     
-    def __init__(self, parameters):
+    def __init__(self, parameters, model_path=model_save_path_21cmGEM):
         '''
-        parameters: list of parameters to accept as input
+        parameters: np.ndarray
+		list of parameters to accept as input
+	model_path : str
+ 		The path to the saved 21cmKAN model instance
+   		Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
         '''
         self.parameters = parameters
         
@@ -37,14 +45,14 @@ class predict_21cmGEM(LoadableModel):
     def parameters(self, value):
         """
         Setter for the array of parameters for this model
-        value: array of parameters to give to the Global21cmKAN.emulate_21cmGEM.Emulate().predict() function
+        value: array of parameters to give to the evaluate_on_21cmGEM.__call__() function
         """
         self._parameters = [element for element in value]
         
     @property
     def neural_network_predictor(self):
         if not hasattr(self, '_neural_network_predictor'):
-            self._neural_network_predictor = evaluate_on_21cmGEM()
+            self._neural_network_predictor = evaluate_on_21cmGEM(model_path)
         return self._neural_network_predictor
         
     def __call__(self, parameters):
@@ -55,9 +63,13 @@ class predict_21cmGEM(LoadableModel):
 
 class predict_ARES(LoadableModel):
     
-    def __init__(self, parameters):
+    def __init__(self, parameters, model_path=model_save_path_ARES):
         '''
-        parameters: list of parameters to accept as input
+        parameters: np.ndarray
+		list of parameters to accept as input
+	model_path : str
+ 		The path to the saved 21cmKAN model instance
+   		Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_ARES.pth"
         '''
         self.parameters = parameters
         
@@ -72,14 +84,14 @@ class predict_ARES(LoadableModel):
     def parameters(self, value):
         """
         Setter for the array of parameters for this model
-        value: array of parameters to give to the Global21cmKAN.emulate_ARES.Emulate().predict() function
+        value: array of parameters to give to the evaluate_on_ARES.__call__()  function
         """
         self._parameters = [element for element in value]
         
     @property
     def neural_network_predictor(self):
         if not hasattr(self, '_neural_network_predictor'):
-            self._neural_network_predictor = evaluate_on_ARES()
+            self._neural_network_predictor = evaluate_on_ARES(model_path)
         return self._neural_network_predictor
         
     def __call__(self, parameters):
