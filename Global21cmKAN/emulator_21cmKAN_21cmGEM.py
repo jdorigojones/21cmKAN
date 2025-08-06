@@ -58,7 +58,6 @@ parameters_log_train[:,0] = unproc_f_s_train
 parameters_log_train[:,1] = unproc_V_c_train
 parameters_log_train[:,2] = unproc_f_X_train
 parameters_log_train[:,3:] = par_train[:,3:].copy()
-
 unproc_f_s_val = par_val[:,0].copy() # f_*, star formation efficiency, # preprocess input physical parameters
 unproc_V_c_val = par_val[:,1].copy() # V_c, minimum circular velocity of star-forming halos 
 unproc_f_X_val = par_val[:,2].copy() # f_X, X-ray efficiency of sources
@@ -88,12 +87,9 @@ for i in range(p_val):
     x_val = parameters_log_val[:,i]
     proc_params_val[:,i] = (x_val-train_mins_21cmGEM[i])/(train_maxs_21cmGEM[i]-train_mins_21cmGEM[i])
 
-#X_train_21cmGEM = torch.from_numpy(proc_params_train)
 X_train_21cmGEM = proc_params_train.copy()
 proc_params_train = 0
 par_train = 0
-#X_train_21cmGEM = X_train_21cmGEM.to(device)
-
 X_val_21cmGEM = torch.from_numpy(proc_params_val)
 proc_params_val = 0
 par_val = 0
@@ -103,12 +99,9 @@ X_val_21cmGEM = X_val_21cmGEM.to(device)
 proc_signals_train = signal_train.copy()
 proc_signals_train = (signal_train - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])  # global Min-Max normalization
 proc_signals_train = proc_signals_train[:,::-1] # flip signals to be from high-z to low-z
-#y_train_21cmGEM = torch.from_numpy(proc_signals_train)
 y_train_21cmGEM = proc_signals_train.copy()
 proc_signals_train = 0
 signal_train = 0
-#y_train_21cmGEM = y_train_21cmGEM.to(device)
-
 proc_signals_val = signal_val.copy()
 proc_signals_val = (signal_val - train_mins_21cmGEM[-1])/(train_maxs_21cmGEM[-1]-train_mins_21cmGEM[-1])  # global Min-Max normalization
 proc_signals_val = proc_signals_val[:,::-1] # flip signals to be from high-z to low-z
