@@ -10,7 +10,6 @@ __author__ = "Johnny Dorigo Jones"
 import requests
 import os
 from pathlib import Path
-#from Global21cmKAN import __path__
 
-from Global21cmKAN import emulator_21cmKAN_21cmGEM
-from Global21cmKAN import emulator_21cmKAN_ARES
+from Global21cmKAN import emulator_21cmKAN_21cmGEM, emulator_21cmKAN_ARES, evaluate_21cmKAN
+# from Global21cmKAN import emulator_21cmKAN_yourmodel
