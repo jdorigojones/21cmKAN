@@ -2,7 +2,7 @@
 
 21cmKAN ([Dorigo Jones et al. 2025](ADS link), referred to as DJ+25) is an emulator of the global 21 cm cosmological signal based on the Kolmogorov-Arnold Network. 21cmKAN has similar accuracy as the most accurate current emulator of the global 21 cm signal, 21cmLSTM ([Dorigo Jones et al. 2024](https://ui.adsabs.harvard.edu/abs/2024ApJ...977...19D/abstract)), while training 75 times faster and predicting each signal in 3.7 milliseconds on average, when utilizing the same typical A100 GPU. The speed-accuracy combination of 21cmKAN enables it to be trained and used to obtain multiple unbiased physical parameter constraints altogether in under 30 minutes. The tutorial notebooks and commented scripts provided in this GitHub repository make 21cmKAN simple to train, evaluate, employ in Bayesian inference analyses, and apply to different physical models and data sets. Please see the associated paper -- [Dorigo Jones et al. 2025](ADS link) -- for details on the architecture, training, and interpretation of 21cmKAN, as well as descriptions of the unique differences and advantages of KANs compared to traditional fully-connected neural networks.
 
-## Setting up an environment 
+## Installing 21cmKAN
 
 To ensure that all packages are available, below we provide basic instructions
 for setting up an environment that is compatible with 21cmKAN. Although it is not 
