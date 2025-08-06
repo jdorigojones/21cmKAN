@@ -1,7 +1,7 @@
 '''
-Name: 21cmKAN/scripts/KANSignalModel.py
+Name: 21cmKAN/scripts/wrapper.py
 Author: Johnny Dorigo Jones
-Original: May 2022, Edited: August 2025 to include classes for both 21cmGEM and ARES
+Original: May 2022, Edited: August 2025 to include classes for predicting both 21cmGEM and ARES signals
 Description: A model class which wraps around the 21cmKAN module for signal model evaluations
 '''
 from __future__ import division
@@ -9,7 +9,7 @@ import time
 import numpy as np
 from pylinex import LoadableModel
 import Global21cmKAN as Global21cmKAN
-from Global21cmKAN.evaluate_21cmKAN import evaluate_on_21cmGEM, evaluate_on_ARES
+from Global21cmKAN.evaluate import evaluate_on_21cmGEM, evaluate_on_ARES
 
 try:
 	# this runs with no issues in python 2 but raises error in python 3
@@ -18,7 +18,7 @@ except:
 	# this try/except allows for python 2/3 compatible string type checking
 	basestring = str
 
-class KANSignalModel_21cmGEM(LoadableModel):
+class predict_21cmGEM(LoadableModel):
     
     def __init__(self, parameters):
         '''
@@ -37,7 +37,7 @@ class KANSignalModel_21cmGEM(LoadableModel):
     def parameters(self, value):
         """
         Setter for the array of parameters for this model
-        value: array of parameters to give to the Global21cmKAN.emulator_21cmKAN_21cmGEM.Emulate().predict() function
+        value: array of parameters to give to the Global21cmKAN.emulate_21cmGEM.Emulate().predict() function
         """
         self._parameters = [element for element in value]
         
@@ -53,7 +53,7 @@ class KANSignalModel_21cmGEM(LoadableModel):
         signal = self.neural_network_predictor(parameters)
         return signal
 
-class KANSignalModel_ARES(LoadableModel):
+class predict_ARES(LoadableModel):
     
     def __init__(self, parameters):
         '''
@@ -72,7 +72,7 @@ class KANSignalModel_ARES(LoadableModel):
     def parameters(self, value):
         """
         Setter for the array of parameters for this model
-        value: array of parameters to give to the Global21cmKAN.emulator_21cmKAN_ARES.Emulate().predict() function
+        value: array of parameters to give to the Global21cmKAN.emulate_ARES.Emulate().predict() function
         """
         self._parameters = [element for element in value]
         
