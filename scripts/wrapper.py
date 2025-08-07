@@ -32,7 +32,7 @@ class predict_21cmGEM(LoadableModel):
  		The path to the saved 21cmKAN model instance
    		Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
         '''
-        self.parameters = parameters
+	self.parameters = parameters
 	self.model_path = model_path
         
     @property
