@@ -6,6 +6,7 @@ Description: A model class which wraps around the 21cmKAN module for signal mode
 '''
 from __future__ import division
 import time
+import os
 import numpy as np
 from pylinex import LoadableModel
 import Global21cmKAN as Global21cmKAN
