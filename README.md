@@ -79,8 +79,11 @@ cd PyMultiNest
 python setup.py install
 cd ..
 ```
-Test importing the library: python -c 'import pymultinest'
-Test the installation by running their demo script: python pymultinest_test.py
+Test the pymultinest installation by importing the library and running their demo script:
+```
+python -c 'import pymultinest'
+python pymultinest_test.py
+```
 
 9. Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master)
 ```
