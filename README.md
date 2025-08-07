@@ -16,7 +16,7 @@ Please see the associated paper -- [Dorigo Jones et al. 2025](ADS link) -- for d
 Please reach out to me at johnny.dorigojones@colorado.edu about any comments, questions, or contributions (can also open an issue or make a pull request). Please reference [Dorigo Jones et al. 2025](
 ADS link) and provide a link to this GitHub repository if you utilize this work or emulator in any way.
 
-## Installing 21cmKAN
+# Installing 21cmKAN
 
 To ensure that all packages are available, below we provide basic instructions
 for setting up an environment that is compatible with 21cmKAN. Although it is not 
