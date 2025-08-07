@@ -64,6 +64,7 @@ cd ..
 pip install pymultinest
 pip install scikit-learn
 pip install matplotlib
+pip install corner
 mamba install conda-forge::cmake=3.16.3 # makes you downgrade Python to 3.12.3 (we are using Python 3.12.8)
 mamba install conda-forge::gcc=9.4.0
 mamba install conda-forge::gfortran=9.4.0
