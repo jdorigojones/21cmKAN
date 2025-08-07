@@ -12,6 +12,10 @@ The tutorial notebooks and commented scripts provided in this GitHub repository 
   
 Please see the associated paper -- [Dorigo Jones et al. 2025](ADS link) -- for details on the architecture, training, and interpretation of 21cmKAN, as well as high-level and in-depth descriptions of the unique differences and advantages of KANs compared to traditional fully-connected neural networks. We note that all of the data used to train and test 21cmKAN in DJ+25 is publicly-available on Zenodo: [21cmGEM/21cmVAE data set](https://zenodo.org/records/5084114); [ARES data set](https://zenodo.org/records/13840725). Those data, as well as the same trained instances of 21cmKAN used to perform Bayesian inference analyses in DJ+25, are downloaded by this repository upon installation to allow for immediate use of the emulator trained on these two popular physical models of the cosmological 21 cm signal.
 
+### Contact; papers to reference
+Please reach out to me at johnny.dorigojones@colorado.edu about any comments, questions, or contributions (can also open an issue or make a pull request). Please reference [Dorigo Jones et al. 2025](
+ADS link) and provide a link to this GitHub repository if you utilize this work or emulator in any way.
+
 ## Installing 21cmKAN
 
 To ensure that all packages are available, below we provide basic instructions
@@ -113,3 +117,6 @@ export DISTPY=/path/to/distpy
 export PYTHONPATH="/path/to/pylinex:$PYTHONPATH"
 export PYTHONPATH="/path/to/distpy:$PYTHONPATH"
 ```
+
+# Contributions
+Authors: Johnny Dorigo Jones and Brandon Reyes
