@@ -344,6 +344,7 @@ class Emulate:
         ------
         IOError : if model_path does not point to a valid model instance
         """
+        print(f"Loading model from: {model_path}")
         self.emulator = torch.load(model_path, weights_only=False)
         self.emulator.to(device)
 
