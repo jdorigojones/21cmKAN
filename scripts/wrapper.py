@@ -23,82 +23,83 @@ model_save_path_21cmGEM = PATH+"models/emulator_21cmGEM.pth"
 model_save_path_ARES = PATH+"models/emulator_ARES.pth"
 
 class predict_21cmGEM(LoadableModel):
-    
-    def __init__(self, parameters, model_path=model_save_path_21cmGEM):
-        '''
-        parameters: np.ndarray
-		list of parameters to accept as input
-	model_path : str
- 		The path to the saved 21cmKAN model instance
-   		Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
-        '''
-	self.parameters = parameters
-	self.model_path = model_path
-        
-    @property
-    def parameters(self):
-        """
-        Property storing an array of parameters for this model
-        """
-        return self._parameters
-        
-    @parameters.setter
-    def parameters(self, value):
-        """
-        Setter for the array of parameters for this model
-        value: array of parameters to give to the evaluate_on_21cmGEM.__call__() function
-        """
-        self._parameters = [element for element in value]
-        
-    @property
-    def neural_network_predictor(self):
-        if not hasattr(self, '_neural_network_predictor'):
-            self._neural_network_predictor = evaluate_on_21cmGEM(model_path=self.model_path)
-        return self._neural_network_predictor
-        
-    def __call__(self, parameters):
-        '''
-        '''
-        signal = self.neural_network_predictor(parameters)
-        return signal
+	def __init__(self, parameters, model_path=model_save_path_21cmGEM):
+		'''
+  		parameters: np.ndarray
+    			list of parameters to accept as input
+       		model_path : str
+	 		The path to the saved 21cmKAN model instance
+    			Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_21cmGEM.pth"
+       		'''
+		self.parameters = parameters
+		self.model_path = model_path
+	
+	@property
+	def parameters(self):
+		"""
+  		Property storing an array of parameters for this model
+    		"""
+		return self._parameters
+	
+	@parameters.setter
+	def parameters(self, value):
+		"""
+  		Setter for the array of parameters for this model
+    		value: array of parameters to give to the evaluate_on_21cmGEM.__call__() function
+      		"""
+		self._parameters = [element for element in value]
+	
+	@property
+	def neural_network_predictor(self):
+		if not hasattr(self, '_neural_network_predictor'):
+			self._neural_network_predictor = evaluate_on_21cmGEM(model_path=self.model_path)
+		return self._neural_network_predictor
+	
+	def __call__(self, parameters):
+		'''
+  		parameters: np.ndarray
+    			list of parameters to accept as input
+       		'''
+		signal = self.neural_network_predictor(parameters)
+		return signal
 
 class predict_ARES(LoadableModel):
-    
-    def __init__(self, parameters, model_path=model_save_path_ARES):
-        '''
-        parameters: np.ndarray
-		list of parameters to accept as input
-	model_path : str
- 		The path to the saved 21cmKAN model instance
-   		Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_ARES.pth"
-        '''
-        self.parameters = parameters
-	self.model_path = model_path
-        
-    @property
-    def parameters(self):
-        """
-        Property storing an array of parameters for this model
-        """
-        return self._parameters
-        
-    @parameters.setter
-    def parameters(self, value):
-        """
-        Setter for the array of parameters for this model
-        value: array of parameters to give to the evaluate_on_ARES.__call__()  function
-        """
-        self._parameters = [element for element in value]
-        
-    @property
-    def neural_network_predictor(self):
-        if not hasattr(self, '_neural_network_predictor'):
-            self._neural_network_predictor = evaluate_on_ARES(model_path=self.model_path)
-        return self._neural_network_predictor
-        
-    def __call__(self, parameters):
-        '''
-        '''
-        signal = self.neural_network_predictor(parameters)
-        return signal
-
+	def __init__(self, parameters, model_path=model_save_path_ARES):
+		'''
+  		parameters: np.ndarray
+    			list of parameters to accept as input
+       		model_path : str
+	 		The path to the saved 21cmKAN model instance
+    			Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_ARES.pth"
+       		'''
+		self.parameters = parameters
+		self.model_path = model_path
+	
+	@property
+	def parameters(self):
+		"""
+  		Property storing an array of parameters for this model
+    		"""
+		return self._parameters
+	
+	@parameters.setter
+	def parameters(self, value):
+		"""
+  		Setter for the array of parameters for this model
+    		value: array of parameters to give to the evaluate_on_ARES.__call__() function
+      		"""
+		self._parameters = [element for element in value]
+	
+	@property
+	def neural_network_predictor(self):
+		if not hasattr(self, '_neural_network_predictor'):
+			self._neural_network_predictor = evaluate_on_ARES(model_path=self.model_path)
+		return self._neural_network_predictor
+	
+	def __call__(self, parameters):
+		'''
+  		parameters: np.ndarray
+    			list of parameters to accept as input
+       		'''
+		signal = self.neural_network_predictor(parameters)
+		return signal
