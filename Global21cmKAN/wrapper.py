@@ -1,5 +1,5 @@
 '''
-Name: 21cmKAN/scripts/wrapper.py
+Name: 21cmKAN/Global21cmKAN/wrapper.py
 Author: Johnny Dorigo Jones
 Original: May 2022, Edited: August 2025 to include classes for predicting both 21cmGEM and ARES signals
 Description: A model class which wraps around the 21cmKAN module for signal model evaluations
