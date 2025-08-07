@@ -85,7 +85,7 @@ python pymultinest_test.py
 cd ..
 ```
 
-9. Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master)
+9. Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master). Pylinex is used to define the likelihood function evaluated during parameter inference.
 ```
 git clone https://github.com/CU-NESS/distpy.git
 cd distpy
