@@ -24,6 +24,7 @@ necessary, we chose to create a [mamba](https://mamba.readthedocs.io/en/latest/u
 
 1. Create a mamba environment named `21cm-kan-env` and activate it
 ```
+module load miniforge
 mamba create -n 21cm-kan-env python==3.12.8
 mamba activate 21cm-kan-env
 ```
