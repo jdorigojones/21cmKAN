@@ -84,7 +84,7 @@ mamba install conda-forge::libblas=3.9.0
 mamba install conda-forge::liblapack=3.9.0
 git clone https://github.com/JohannesBuchner/MultiNest
 cd MultiNest/build
-cmake .. # ignore "Could NOT find MPI..."
+cmake ..
 make
 export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH
 cd ..
