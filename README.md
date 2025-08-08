@@ -127,7 +127,6 @@ export PYTHONPATH="/path/to/distpy:$PYTHONPATH"
 cd /path/to/21cmKAN/
 python tutorials/test_basic_installation.py
 ```
-```
 
 # Contributions
 Authors: Johnny Dorigo Jones and Brandon Reyes
