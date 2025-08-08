@@ -68,7 +68,8 @@ python -m pip install .
 cd ..
 ```
 
-## The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses:
+## The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses.
+Note that installing cmake makes you downgrade Python to 3.12.3
 
 8. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
 ```
@@ -76,7 +77,7 @@ pip install pymultinest
 pip install scikit-learn
 pip install matplotlib
 pip install corner
-mamba install conda-forge::cmake=3.16.3 # makes you downgrade Python to 3.12.3 (we are using Python 3.12.8)
+mamba install conda-forge::cmake=3.16.3
 mamba install conda-forge::gcc=9.4.0
 mamba install conda-forge::gfortran=9.4.0
 mamba install conda-forge::libblas=3.9.0
@@ -85,7 +86,7 @@ git clone https://github.com/JohannesBuchner/MultiNest
 cd MultiNest/build
 cmake .. # ignore "Could NOT find MPI..."
 make
-export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH # add the compiled libraries to your LD_LIBRARY_PATH. Must do this every time you use the library
+export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH
 cd ..
 cd ..
 git clone https://github.com/JohannesBuchner/PyMultiNest/
@@ -110,7 +111,7 @@ cd pylinex
 python setup.py develop --user
 ```
 
-10. Remember to run the following path exports when using the pymultinest, distpy, and pylinex libraries
+10. Remember to run the following exports every time you use pymultinest, distpy, or pylinex to add the compiled libraries to your path:
 ```
 export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH
 export PYLINEX=/path/to/pylinex
