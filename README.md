@@ -87,7 +87,7 @@ python tutorials/test_basic_installation.py
 
 Note that installing cmake makes you downgrade Python to 3.12.3. Ignore the "could not find MPI..."
 
-7. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
+Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
 ```
 pip install pymultinest
 pip install scikit-learn
@@ -116,7 +116,7 @@ python tests/pymultinest_test.py
 cd ..
 ```
 
-8. Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master). Pylinex is used to define the likelihood function evaluated during the nested sampling analyses.
+Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master). Pylinex is used to define the likelihood function evaluated during the nested sampling analyses.
 ```
 git clone https://github.com/CU-NESS/distpy.git
 cd distpy
