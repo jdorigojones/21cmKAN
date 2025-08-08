@@ -28,28 +28,35 @@ module load miniforge
 mamba create -n 21cmkan-env python==3.12.8
 mamba activate 21cmkan-env
 ```
-
-2. Grab [efficient-kan](https://github.com/Blealtan/efficient-kan)
-```
-git clone https://github.com/Blealtan/efficient-kan.git
-```
-> [!NOTE]
-> We would like to extend a HUGE thank you to the individuals who implemented efficient-kan. Without it, creating 21cmKAN may not have been possible. 
-3. Depending on your architecture, you may need to install the CUDA version of `torch` and `torchvision` (or else it will default to the CPU version). Here we install `torch` and `torchvision` for CUDA version 12.4:
+2. Depending on your architecture, you may need to install the CUDA version of `torch` and `torchvision` (or else it will default to the CPU version). Here we install `torch` and `torchvision` for CUDA version 12.4:
 ```
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
 ```
-4. Install efficient-kan and associated dependencies into environment:
+
+3. Install [efficient-kan](https://github.com/Blealtan/efficient-kan) and associated dependencies into environment:
 ```
+git clone https://github.com/Blealtan/efficient-kan.git
 cd efficient-kan
 pip install .
 cd ..
 ```
+> [!NOTE]
+> We would like to extend a HUGE thank you to the individuals who implemented efficient-kan. Without it, creating 21cmKAN may not have been possible.
+
+4. Install 21cmKAN
+```
+git clone https://github.com/jdorigojones/21cmKAN
+cd 21cmKAN
+python -m pip install .
+cd ..
+```
+
 5. To perform [Ray Tune](https://docs.ray.io/en/latest/ray-overview/installation.html) Bayesian hyperparameter search, include the following libraries:
 ```
 pip install ray[tune]
 pip install optuna
 ```
+
 6. If you would like to use [Pykan's](https://github.com/KindXiaoming/pykan) LBFGS optimizer, then you will 
 need to install it (and some additional dependencies) in your environment: 
 ```
@@ -60,17 +67,9 @@ pip install matplotlib
 pip install pandas 
 ```
 
-7. Install 21cmKAN
-```
-git clone https://github.com/jdorigojones/21cmKAN
-cd 21cmKAN
-python -m pip install .
-cd ..
-```
-
 # Test the basic installation
 
-Run the installation test script from within the 21cmKAN/ repository so that it can locate utils.py. Remember to run the exports before every time you use pymultinest, distpy, or pylinex to add the compiled libraries to your path:
+Run the installation test script from within the 21cmKAN/ repository (so that it can locate utils.py). Remember to run the exports before every time you use pymultinest, distpy, or pylinex to add the compiled libraries to your path:
 ```
 module load miniforge
 mamba activate 21cmkan-env
@@ -85,10 +84,10 @@ cd /path/to/21cmKAN/
 python tutorials/test_basic_installation.py
 ```
 
-## The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses.
+# The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses.
 Note that installing cmake makes you downgrade Python to 3.12.3. Ignore the "could not find MPI..."
 
-8. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
+7. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
 ```
 pip install pymultinest
 pip install scikit-learn
@@ -117,7 +116,7 @@ python tests/pymultinest_test.py
 cd ..
 ```
 
-9. Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master). Pylinex is used to define the likelihood function evaluated during the nested sampling analyses.
+8. Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master). Pylinex is used to define the likelihood function evaluated during the nested sampling analyses.
 ```
 git clone https://github.com/CU-NESS/distpy.git
 cd distpy
