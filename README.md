@@ -96,7 +96,7 @@ python setup.py install
 Test the pymultinest installation by importing the library and running their demo script:
 ```
 python -c 'import pymultinest'
-python pymultinest_test.py
+python tests/pymultinest_test.py
 cd ..
 ```
 
