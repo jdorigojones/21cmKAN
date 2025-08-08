@@ -64,7 +64,6 @@ pip install pandas
 git clone https://github.com/jdorigojones/21cmKAN
 cd 21cmKAN
 python -m pip install .
-cd ..
 ```
 
 # Test the basic installation
@@ -84,7 +83,8 @@ cd /path/to/21cmKAN/
 python tutorials/test_basic_installation.py
 ```
 
-# The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses.
+# Additional installation steps for using 21cmKAN to perform Bayesian nested sampling parameter inference analyses.
+
 Note that installing cmake makes you downgrade Python to 3.12.3. Ignore the "could not find MPI..."
 
 7. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
