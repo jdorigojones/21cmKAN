@@ -68,6 +68,23 @@ python -m pip install .
 cd ..
 ```
 
+# Test the basic installation
+
+Run the installation test script from within the 21cmKAN/ repository so that it can locate utils.py. Remember to run the exports before every time you use pymultinest, distpy, or pylinex to add the compiled libraries to your path:
+```
+module load miniforge
+mamba activate 21cmkan-env
+
+export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH
+export PYLINEX=/path/to/pylinex
+export DISTPY=/path/to/distpy
+export PYTHONPATH="/path/to/pylinex:$PYTHONPATH"
+export PYTHONPATH="/path/to/distpy:$PYTHONPATH"
+
+cd /path/to/21cmKAN/
+python tutorials/test_basic_installation.py
+```
+
 ## The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses.
 Note that installing cmake makes you downgrade Python to 3.12.3. Ignore the "could not find MPI..."
 
@@ -109,23 +126,6 @@ cd ..
 git clone https://github.com/CU-NESS/pylinex.git
 cd pylinex
 python setup.py develop --user
-```
-
-# Test the installation
-
-Run the basic installation test script from within the 21cmKAN/ repository so that it can locate utils.py. Remember to run the exports before every time you use pymultinest, distpy, or pylinex to add the compiled libraries to your path:
-```
-module load miniforge
-mamba activate 21cmkan-env
-
-export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH
-export PYLINEX=/path/to/pylinex
-export DISTPY=/path/to/distpy
-export PYTHONPATH="/path/to/pylinex:$PYTHONPATH"
-export PYTHONPATH="/path/to/distpy:$PYTHONPATH"
-
-cd /path/to/21cmKAN/
-python tutorials/test_basic_installation.py
 ```
 
 # Contributions
