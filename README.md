@@ -69,7 +69,7 @@ cd ..
 ```
 
 ## The following installation steps are for if you wish to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses.
-Note that installing cmake makes you downgrade Python to 3.12.3
+Note that installing cmake makes you downgrade Python to 3.12.3. Ignore the "could not find MPI..."
 
 8. Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
 ```
