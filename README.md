@@ -22,11 +22,11 @@ To ensure that all packages are available, below we provide basic instructions
 for setting up an environment that is compatible with 21cmKAN. Although it is not 
 necessary, we chose to create a [mamba](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html) environment. 
 
-1. Create a mamba environment named `21cm-kan-env` and activate it
+1. Create a mamba environment named `21cmkan-env` and activate it
 ```
 module load miniforge
-mamba create -n 21cm-kan-env python==3.12.8
-mamba activate 21cm-kan-env
+mamba create -n 21cmkan-env python==3.12.8
+mamba activate 21cmkan-env
 ```
 
 2. Grab [efficient-kan](https://github.com/Blealtan/efficient-kan)
