@@ -43,15 +43,9 @@ cd ..
 > [!NOTE]
 > We would like to extend a HUGE thank you to the individuals who implemented efficient-kan. Without it, creating 21cmKAN may not have been possible.
 
-4. Install the following libraries in your environment to perform [Ray Tune](https://docs.ray.io/en/latest/ray-overview/installation.html) Bayesian hyperparameter searches and to use [Pykan's](https://github.com/KindXiaoming/pykan) LBFGS optimizer, if desired:
+4. Install the following library dependencies in your environment, also needed to perform [Ray Tune](https://docs.ray.io/en/latest/ray-overview/installation.html) Bayesian hyperparameter searches and to use [Pykan's](https://github.com/KindXiaoming/pykan) LBFGS optimizer:
 ```
-pip install ray[tune]
-pip install optuna
-pip install pykan
-pip install scikit-learn
-pip install pyyaml
-pip install matplotlib
-pip install pandas 
+pip install ray[tune] optuna pykan scikit-learn pyyaml matplotlib pandas 
 ```
 
 5. Install 21cmKAN
