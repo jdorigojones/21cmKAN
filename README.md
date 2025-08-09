@@ -68,16 +68,10 @@ python -m pip install .
 
 # Test the basic installation
 
-Run the installation test script from within the 21cmKAN/ repository (so that it can locate utils.py). Remember to run the exports before every time you use pymultinest, distpy, or pylinex to add the compiled libraries to your path:
+Run the installation test script from within the 21cmKAN/ repository (so that it can locate utils.py)
 ```
 module load miniforge
 mamba activate 21cmkan-env
-
-export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH
-export PYLINEX=/path/to/pylinex
-export DISTPY=/path/to/distpy
-export PYTHONPATH="/path/to/pylinex:$PYTHONPATH"
-export PYTHONPATH="/path/to/distpy:$PYTHONPATH"
 
 cd /path/to/21cmKAN/
 python tutorials/test_basic_installation.py
@@ -125,6 +119,15 @@ cd ..
 git clone https://github.com/CU-NESS/pylinex.git
 cd pylinex
 python setup.py develop --user
+```
+
+Remember to run the following exports before every time you use pymultinest, distpy, or pylinex to add the compiled libraries to your path:
+```
+export LD_LIBRARY_PATH=/path/to/MultiNest/lib:$LD_LIBRARY_PATH
+export PYLINEX=/path/to/pylinex
+export DISTPY=/path/to/distpy
+export PYTHONPATH="/path/to/pylinex:$PYTHONPATH"
+export PYTHONPATH="/path/to/distpy:$PYTHONPATH"
 ```
 
 # Contributions
