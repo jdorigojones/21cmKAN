@@ -1,3 +1,6 @@
+### this script performs a Ray Tune Bayesian automatic hyperparameter search by training 21cmKAN with 1,000 different architecture hyperparameters
+### on the 21cmGEM training set. See Section 2.3 of Dorigo Jones et al. 2025 for further details
+
 import os 
 import h5py
 import torch 
@@ -155,7 +158,7 @@ def train_model(config):
     tune.report({"max_error": max_error, "test_mean_rel_err": test_mean_rel_err, "test_median_rel_err": test_median_rel_err, "test_max_rel_err": test_max_rel_err}, checkpoint=None)
 
 # Define directories to store results produced by Ray Tune and models produced
-results_dir = "/path/to/21cmKAN_ray_tune_results"
+results_dir = os.path.abspath("./21cmKAN_ray_tune_results")
 model_save_dir = results_dir + "/saved_models/"
 
 # Define the name of the trial directory for Ray Tune 
