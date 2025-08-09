@@ -109,14 +109,13 @@ min_abs = torch.abs(y_val_21cmGEM).min(dim=1)[0]
 # Create normalized training Dataset and DataLoader
 train_dataset = NumPyArray2TensorDataset(features_npy=X_train_21cmGEM, targets_npy=y_train_21cmGEM)
 
-# Define optimizer 
-optimizer = optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
-
 def train_model(config):
     # Initialize model with given configurations 
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=config["batch_size"], shuffle=True)
     model = KAN(layers_hidden=[7, config["layer1"], config["layer2"], config["layer3"], 451], grid_size=config["grid_size"], spline_order=config["spline_order"])
     model.to(device)
+    # Define optimizer 
+    optimizer = optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
 
     for epoch in range(config["epochs"]):
 
