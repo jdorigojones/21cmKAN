@@ -5,6 +5,7 @@ import os
 import h5py
 import torch 
 import torch.optim as optim
+import numpy as np
 from efficient_kan import KAN
 from utils import *
 from ray import tune
