@@ -57,7 +57,7 @@ python -m pip install .
 
 # Test the basic installation
 
-Run the installation test script. For the tutorial notebooks, run them from within the 21cmKAN/ repository so that it can locate utils.py
+Execute the installation test script. For the tutorial notebooks, run them from within the 21cmKAN/ repository so that it can locate utils.py
 ```
 module load miniforge
 mamba activate 21cmkan-env
