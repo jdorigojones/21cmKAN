@@ -67,13 +67,13 @@ python -m pip install .
 
 # Test the basic installation
 
-Execute the installation test script. For the tutorial notebooks, run them from within the 21cmKAN/ repository so that it can locate utils.py
+Execute the installation test script:
 ```
 module load miniforge
 mamba activate 21cmkan-env
 
 cd /path/to/21cmKAN/
-python test_basic_installation.py
+python Global21cmKAN/test_basic_installation.py
 ```
 
 # Additional installation steps to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses
