@@ -16,7 +16,7 @@ Please see the associated paper -- [Dorigo Jones et al. 2025](ADS link) -- for d
 
 ![fig2](https://github.com/user-attachments/assets/6b15d924-283f-48cc-b9c0-90d5efe0b8d6)
 
-![fig3](https://github.com/user-attachments/assets/ac005c4f-d8d9-4947-8e86-5294afa28edb)
+![fig3](https://github.com/user-attachments/assets/ac005c4f-d8d9-4947-8e86-5294afa28edb | width=100)
 
 ## Contact; papers to reference
 Please reach out to me at johnny.dorigojones@colorado.edu about any comments, questions, or contributions (can also open an issue or make a pull request). Please reference [Dorigo Jones et al. 2025](
