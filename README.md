@@ -78,6 +78,7 @@ Note that installing cmake makes you downgrade Python to 3.12.3. Ignore the "cou
 
 Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
 ```
+cd ..
 pip install pymultinest corner
 mamba install conda-forge::cmake=3.16.3 conda-forge::gcc=9.4.0 conda-forge::gfortran=9.4.0 conda-forge::libblas=3.9.0 conda-forge::liblapack=3.9.0
 git clone https://github.com/JohannesBuchner/MultiNest
