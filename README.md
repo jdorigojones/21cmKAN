@@ -99,7 +99,7 @@ python tests/pymultinest_test.py
 cd ..
 ```
 
-Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master). Pylinex is used to define the likelihood function evaluated during the nested sampling analyses.
+Install [distpy](https://github.com/CU-NESS/distpy) and [pylinex](https://github.com/CU-NESS/pylinex/tree/master), used to define the likelihood function evaluated during nested sampling analyses
 ```
 git clone https://github.com/CU-NESS/distpy.git
 cd distpy
