@@ -22,9 +22,9 @@ Please see the associated paper -- [Dorigo Jones et al. 2025](ADS link) -- for d
 
 ![fig2](https://github.com/user-attachments/assets/6b15d924-283f-48cc-b9c0-90d5efe0b8d6)
 
-## Contact and Paper Citation
-Please reach out to me at johnny.dorigojones@colorado.edu about any comments, questions, or contributions (can also open an issue or make a pull request).
-Please reference [Dorigo Jones et al. 2025](ADS link) and provide a link to this GitHub repository if you utilize this work or emulator in any way.
+## Paper Citation and Contact
+- Please reference [Dorigo Jones et al. 2025](ADS link) and provide a link to this GitHub repository if you utilize this work or emulator in any way.
+- Please reach out to me at johnny.dorigojones@colorado.edu about any comments, questions, or contributions (can also open an issue or make a pull request).
 
 # Installing 21cmKAN
 
