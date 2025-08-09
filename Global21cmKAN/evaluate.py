@@ -5,7 +5,7 @@
 
 # independent script to evaluate a trained instance of 21cmKAN given input set of physical parameter values
 # imported by wrapper.py to perform PyMultiNest analyses
-# note that the Global21cmKAN.emulator.Emulate().predict() function can also be used to evaluate 21cmKAN
+# note that the Global21cmKAN.emulate_21cmGEM.Emulate().predict() function can also be used to evaluate 21cmKAN
 
 import numpy as np
 import torch
