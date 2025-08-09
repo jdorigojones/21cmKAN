@@ -72,10 +72,7 @@ Note that installing cmake makes you downgrade Python to 3.12.3. Ignore the "cou
 
 Install [PyMultiNest](https://johannesbuchner.github.io/PyMultiNest/install.html)
 ```
-pip install pymultinest
-pip install scikit-learn
-pip install matplotlib
-pip install corner
+pip install pymultinest corner
 mamba install conda-forge::cmake=3.16.3
 mamba install conda-forge::gcc=9.4.0
 mamba install conda-forge::gfortran=9.4.0
