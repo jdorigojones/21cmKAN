@@ -36,6 +36,7 @@ print('21cmGEM physical parameter names:', emulator_21cmGEM.par_labels)
 print('21cmGEM physical parameter values of example signal:', params_21cmGEM)
 print('relative rms error between "true" 21cmGEM and emulated 21cmKAN example signal:', error(signal_21cmGEM, signal_21cmKAN)[0], '%')
 print('absolute rms error between "true" 21cmGEM and emulated 21cmKAN example signal:', error(signal_21cmGEM, signal_21cmKAN, relative=False)[0], 'mK')
+print()
 
 vr = 1420.405751
 def freq(zs):
@@ -72,7 +73,7 @@ plt.tight_layout()
 plt.savefig('true_and_emulated_signals_21cmKAN_21cmGEM.jpg', dpi=300, bbox_inches='tight', facecolor='w')
 plt.show()
 
-### now do the same for 21cmKAN trained and tested on the ARES data set !
+########################################## now do the same for 21cmKAN trained and tested on the ARES data set !
 
 emulator_ARES = Global21cmKAN.emulate_ARES.Emulate()
 emulator_ARES.load_model()
@@ -91,6 +92,7 @@ print('ARES physical parameter names:', emulator_ARES.par_labels)
 print('ARES physical parameter values of example signal:', params_ARES)
 print('relative rms error between "true" ARES and emulated 21cmKAN example signal:', error(signal_ARES, signal_21cmKAN)[0], '%')
 print('absolute rms error between "true" ARES and emulated 21cmKAN example signal:', error(signal_ARES, signal_21cmKAN, relative=False)[0], 'mK')
+print()
 
 z_list = emulator_ARES.redshifts
 nu_list = freq(z_list)
