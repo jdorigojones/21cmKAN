@@ -7,6 +7,7 @@ from utils import *
 from ray import tune
 from ray.tune.search.optuna import OptunaSearch
 from ray.train import RunConfig
+import Global21cmKAN as Global21cmKAN
 
 def train_model(config):
 
@@ -142,19 +143,20 @@ def train_model(config):
             print(f"Error in trial: {e}")
             max_error = 99999
 
-    test_mean_rel_err, test_median_rel_err, test_max_rel_err = eval_test_set_21cmGEM(model, data_path, device)
-
     file_name = create_file_name(config, test_max_rel_err)
-
     torch.save(model, config["model_save_dir"] + file_name)
+    # create and load 21cmKAN emulator instance already trained on the 21cmGEM data set
+    emulator_21cmGEM = Global21cmKAN.emulate_21cmGEM.Emulate()
+    emulator_21cmGEM.load_model(model_path=config["model_save_dir"] + file_name)
+    test_rel_RMSE_values_21cmGEM = emulator_21cmGEM.test_error()
+    test_mean_rel_err = np.mean(test_rel_RMSE_values_21cmGEM)
+    test_median_rel_err = np.median(test_rel_RMSE_values_21cmGEM)
+    test_max_rel_err = np.max(test_rel_RMSE_values_21cmGEM)
     tune.report({"max_error": max_error, "test_mean_rel_err": test_mean_rel_err, "test_median_rel_err": test_median_rel_err, "test_max_rel_err": test_max_rel_err}, checkpoint=None)
 
 # Define directories to store results produced by Ray Tune and models produced
 results_dir = "/path/to/21cmKAN_ray_tune_results"
 model_save_dir = results_dir + "/saved_models/"
-
-# Define path to training, validation, and test data 
-data_path = "/projects/jodo2960/KAN/data/"
 
 # Define the name of the trial directory for Ray Tune 
 trial_directory = "test_experiment"
@@ -173,8 +175,7 @@ config = {
     "epochs": 400,
     "model_save_dir": model_save_dir}
 
-# Use Optuna to perform Bayesian hyperparameter optimization using 
-# max_error produced by the validation set  
+# Use Optuna to perform Bayesian hyperparameter optimization using max_error produced by the validation set  
 optuna_search = OptunaSearch(metric="max_error", mode="min")
 
 # Split up the A100 GPU to run multiple trials at once
@@ -194,8 +195,7 @@ tuner = tune.Tuner(
         search_alg=optuna_search,
         num_samples=num_samples, 
         max_concurrent_trials=max_concurrent_trials),
-    run_config=RunConfig(storage_path=results_dir, name=trial_directory)
-)
+    run_config=RunConfig(storage_path=results_dir, name=trial_directory))
 
 # code to resume a previous tune experiment
 #tuner = tune.Tuner.restore(os.path.expanduser("/path/to/21cmKAN_ray_tune_results/test_experiment"),
