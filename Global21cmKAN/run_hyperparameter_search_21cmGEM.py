@@ -106,7 +106,7 @@ def train_model(config):
 
     # Create normalized training Dataset and DataLoader
     train_dataset = NumPyArray2TensorDataset(features_npy=X_train_21cmGEM, targets_npy=y_train_21cmGEM)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=config["batch_size"], shuffle=True)
 
     # Initialize model with given configurations 
     model = KAN(layers_hidden=[7, config["layer1"], config["layer2"], config["layer3"], 451], grid_size=config["grid_size"], spline_order=config["spline_order"])
@@ -138,7 +138,7 @@ def train_model(config):
             with torch.no_grad():
                 val_pred = model(X_val_21cmGEM)
                 sqrt_MSE = torch.sqrt(torch.mean((val_pred-y_val_21cmGEM)**2, dim=1))
-                error = (sqrt_MSE/max_abs)*100
+                error = (sqrt_MSE/min_abs)*100
                 max_error = error.max()
                 max_error = max_error.cpu().detach().numpy()
 
