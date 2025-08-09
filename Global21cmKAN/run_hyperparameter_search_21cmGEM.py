@@ -1,11 +1,12 @@
-from efficient_kan import KAN
+import os 
+import h5py
 import torch 
 import torch.optim as optim
+from efficient_kan import KAN
 from utils import *
 from ray import tune
 from ray.tune.search.optuna import OptunaSearch
 from ray.train import RunConfig
-import os 
 
 def train_model(config):
 
