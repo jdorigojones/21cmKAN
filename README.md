@@ -2,6 +2,8 @@
 
 21cmKAN ([Dorigo Jones et al. 2025](ADS link), referred to as DJ+25) is an emulator of the global 21 cm cosmological signal based on the [Kolmogorov-Arnold Network](https://ui.adsabs.harvard.edu/abs/2024arXiv240419756L/abstract). KANs are a novel type of fully-connected neural network that capture complex relationships by learning data-driven functional transformations, or activation functions, as opposed to using fixed, pre-determined activations. The expressivity of KANs makes them useful for modeling certain structured, lower-dimensional functions or PDEs often found in science, and their transparent architecture makes it easy to interpret and verify their predictions.
 
+![fig1](https://github.com/user-attachments/assets/a6adb679-e564-4f80-bb70-4f991fe77323)
+
 **21cmKAN has similar accuracy as the most accurate current emulator of the global 21 cm signal, 21cmLSTM ([Dorigo Jones et al. 2024](https://ui.adsabs.harvard.edu/abs/2024ApJ...977...19D/abstract)), while training 75 times faster and predicting each signal in 3.7 milliseconds on average, when utilizing the same typical A100 GPU. 21cmKAN can be trained and used to obtain unbiased physical parameter constraints altogether in under 30 minutes. The speed-accuracy combination of 21cmKAN enables producing many emulator models that can constrain complex feature spaces and covariances across different physical models and parameterizations to fully exploit upcoming observations.**
 
 The tutorial notebooks and commented scripts provided in this GitHub repository make 21cmKAN simple to train, evaluate, employ in Bayesian inference analyses, and apply to different physical models and data sets:
@@ -11,6 +13,10 @@ The tutorial notebooks and commented scripts provided in this GitHub repository 
 - "emulate_21cmGEM.py" and "emulate_ARES.py" are the classes for using 21cmKAN to emulate the 21cmGEM and ARES data sets, respectively. "emulate_yourmodel.py" is an example class that can be edited to use 21cmKAN to emulate a different model or data set of global 21 cm signals
   
 Please see the associated paper -- [Dorigo Jones et al. 2025](ADS link) -- for details on the architecture, training, and interpretation of 21cmKAN, as well as high-level and in-depth descriptions of the unique differences and advantages of KANs compared to traditional fully-connected neural networks. We note that all of the data used to train and test 21cmKAN in DJ+25 is publicly-available on Zenodo: [21cmGEM/21cmVAE data set](https://zenodo.org/records/5084114); [ARES data set](https://zenodo.org/records/13840725). Those data, as well as the same trained instances of 21cmKAN used to perform Bayesian inference analyses in DJ+25, are downloaded by this repository upon installation to allow for immediate use of the emulator trained on these two popular physical models of the cosmological 21 cm signal.
+
+![fig2](https://github.com/user-attachments/assets/6b15d924-283f-48cc-b9c0-90d5efe0b8d6)
+
+![fig3](https://github.com/user-attachments/assets/ac005c4f-d8d9-4947-8e86-5294afa28edb)
 
 ## Contact; papers to reference
 Please reach out to me at johnny.dorigojones@colorado.edu about any comments, questions, or contributions (can also open an issue or make a pull request). Please reference [Dorigo Jones et al. 2025](
