@@ -66,7 +66,7 @@ cd /path/to/21cmKAN/
 python test_basic_installation.py
 ```
 
-# Additional installation steps for using 21cmKAN to perform Bayesian nested sampling parameter inference analyses.
+# Additional installation steps to use 21cmKAN to perform Bayesian nested sampling parameter inference analyses
 
 Note that installing cmake makes you downgrade Python to 3.12.3. Ignore the "could not find MPI..."
 
