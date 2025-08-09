@@ -17,7 +17,6 @@ def train_model(config):
     
     # define paths of the saved trained 21cmKAN networks and min/max training set values used for preprocessing
     PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
-    model_save_path = PATH+"models/emulator_21cmGEM.pth"
     train_mins_21cmGEM = np.load(PATH+"models/train_mins_21cmGEM.npy")
     train_maxs_21cmGEM = np.load(PATH+"models/train_maxs_21cmGEM.npy")
     
