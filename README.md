@@ -1,6 +1,6 @@
 # Welcome to 21cmKAN! 
 
-21cmKAN ([Dorigo Jones et al. 2025](ADS link), referred to as DJ+25) is an emulator of the global 21 cm cosmological signal based on the [Kolmogorov-Arnold Network](https://ui.adsabs.harvard.edu/abs/2024arXiv240419756L/abstract). KANs are a novel type of fully-connected neural network that capture complex relationships by learning data-driven functional transformations, or activation functions, as opposed to using fixed, pre-determined activations. The expressivity of KANs makes them useful for modeling certain structured, lower-dimensional functions or PDEs often found in science, and their transparent architecture makes it easy to interpret and verify their predictions.
+21cmKAN (Dorigo Jones et al. 2025, referred to as DJ+25) is an emulator of the global 21 cm cosmological signal based on the [Kolmogorov-Arnold Network](https://ui.adsabs.harvard.edu/abs/2024arXiv240419756L/abstract). KANs are a novel type of fully-connected neural network that capture complex relationships by learning data-driven functional transformations, or activation functions, as opposed to using fixed, pre-determined activations. The expressivity of KANs makes them useful for modeling certain structured, lower-dimensional functions or PDEs often found in science, and their transparent architecture makes it easy to interpret and verify their predictions.
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/a6adb679-e564-4f80-bb70-4f991fe77323" alt="fig1" width="700">
@@ -14,7 +14,7 @@ The tutorial notebooks and commented scripts provided in this GitHub repository 
 - "21cmKAN_Bayesian_inference_example_ARES.ipynb" shows how to use 21cmKAN to fit a mock global 21 cm signal made by the ARES model and constrain its physical model parameters. The notebook provides code for reproducing Figures 6 and C3 in DJ+25.
 - "emulate_21cmGEM.py" and "emulate_ARES.py" are the classes for using 21cmKAN to emulate the 21cmGEM and ARES data sets, respectively. "emulate_yourmodel.py" is an example class that can be edited to use 21cmKAN to emulate a different model or data set
   
-Please see the associated paper -- [Dorigo Jones et al. 2025](ADS link) -- for details on the architecture, training, and interpretation of 21cmKAN, as well as high-level and in-depth descriptions of the unique differences and advantages of KANs compared to traditional fully-connected neural networks. We note that all of the data used to train and test 21cmKAN in DJ+25 is publicly-available on Zenodo: [21cmGEM/21cmVAE data set](https://zenodo.org/records/5084114); [ARES data set](https://zenodo.org/records/13840725). Those data, as well as the same trained instances of 21cmKAN used to perform Bayesian inference analyses in DJ+25, are downloaded by this repository upon installation to allow immediate use of the emulator trained on these two popular physical models of the cosmological 21 cm signal.
+Please see the associated paper -- Dorigo Jones et al. 2025 -- for details on the architecture, training, and interpretation of 21cmKAN, as well as high-level and in-depth descriptions of the unique differences and advantages of KANs compared to traditional fully-connected neural networks. We note that all of the data used to train and test 21cmKAN in DJ+25 is publicly-available on Zenodo: [21cmGEM/21cmVAE data set](https://zenodo.org/records/5084114); [ARES data set](https://zenodo.org/records/13840725). Those data, as well as the same trained instances of 21cmKAN used to perform Bayesian inference analyses in DJ+25, are downloaded by this repository upon installation to allow immediate use of the emulator trained on these two popular physical models of the cosmological 21 cm signal.
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/ac005c4f-d8d9-4947-8e86-5294afa28edb" alt="fig3" width="500">
@@ -23,7 +23,7 @@ Please see the associated paper -- [Dorigo Jones et al. 2025](ADS link) -- for d
 ![fig2](https://github.com/user-attachments/assets/6b15d924-283f-48cc-b9c0-90d5efe0b8d6)
 
 ## Paper Citation and Contact
-- Please reference [Dorigo Jones et al. 2025](ADS link) and provide a link to this GitHub repository if you utilize this work or emulator in any way.
+- Please reference Dorigo Jones et al. 2025 and provide a link to this GitHub repository if you utilize this work or emulator in any way.
 - Please reach out to me at johnny.dorigojones@colorado.edu about any comments, questions, or contributions (can also open an issue or make a pull request).
 
 # Installing 21cmKAN
