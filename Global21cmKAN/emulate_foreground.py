@@ -39,7 +39,7 @@ train_mins_foreground_beam = np.load(PATH+"models/train_mins_foreground_beam.npy
 train_maxs_foreground_beam = np.load(PATH+"models/train_maxs_foreground_beam.npy")
 
 frequencies = np.linspace(6,50,176)
-#vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
+vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
 #z_list = np.array([(vr/x)-1 for x in frequencies]) # list of redshifts for spectra in your model
 z_list = np.linspace(27.40811504, 235.73429196, 176)
 # Load in unnormalized training, validation, and test data made by your model as numpy arrays; UNCOMMENT
