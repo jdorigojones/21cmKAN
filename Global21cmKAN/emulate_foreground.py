@@ -40,7 +40,7 @@ train_maxs_foreground_beam = np.load(PATH+"models/train_maxs_foreground_beam.npy
 
 frequencies = np.linspace(6,50,176)
 vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
-z_list = [(vr/x)-1 for x in frequencies] # list of redshifts for spectra in your model
+z_list = np.array([(vr/x)-1 for x in frequencies]) # list of redshifts for spectra in your model
 # Load in unnormalized training, validation, and test data made by your model as numpy arrays; UNCOMMENT
 with h5py.File(PATH + 'bw_training_set_500k_split.h5', "r") as f:
     print("Keys: %s" % f.keys())
