@@ -217,7 +217,7 @@ def error(true_spectrum, emulated_spectrum, relative=True, nu=None, nu_low=None,
 
     err = np.sqrt(np.mean((emulated_spectrum - true_spectrum)**2, axis=1))
     if relative:  # return the rms error as a fraction of the spectrum amplitude in the chosen frequency band
-        err /= true_spectrum[0]
+        err /= true_spectrum[:,0]
         err *= 100 # convert to per cent (%)
     return err
 
