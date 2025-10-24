@@ -13,7 +13,7 @@ print("Device: ", device)
 # Set default torch type to float64
 torch.set_default_dtype(torch.float64)
 
-# specify KAN model architecture and configs for training on your model
+# specify KAN model architecture and configs for training on beam-weighted foreground spectra
 input_nodes = 18
 hidden_layer1_nodes = 44
 hidden_layer2_nodes = 44
