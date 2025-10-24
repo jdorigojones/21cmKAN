@@ -32,7 +32,8 @@ print(f"number of training epochs: {num_epochs}")
 print(f"training batch size: {batch_size}")
 
 # define path containing saved trained 21cmKAN networks and min/max training set values used for preprocessing
-PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
+#PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
+PATH = '/projects/jodo2960/beam_weighted_foreground/'
 model_save_path = PATH+"models/emulator_foreground_beam.pth"
 train_mins_foreground_beam = np.load(PATH+"models/train_mins_foreground_beam.npy")
 train_maxs_foreground_beam = np.load(PATH+"models/train_maxs_foreground_beam.npy")
