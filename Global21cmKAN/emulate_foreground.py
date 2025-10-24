@@ -22,8 +22,8 @@ output_nodes = 176
 layer_nodes = [input_nodes, hidden_layer1_nodes, hidden_layer2_nodes, hidden_layer3_nodes, output_nodes]
 grid_size = 7
 spline_order = 3
-num_epochs = 10 #400
-batch_size = 2048 #100
+num_epochs = 20 #400
+batch_size = 100
 #history_size = 10  # history size for LBFGS optimizer
 print(f"nodes in each layer: {layer_nodes}")
 print(f"number of grid intervals in B-splines: {grid_size}")
