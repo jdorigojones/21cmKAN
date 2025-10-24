@@ -11,5 +11,5 @@ import requests
 import os
 from pathlib import Path
 
-from Global21cmKAN import emulate_21cmGEM, emulate_ARES, evaluate
+from Global21cmKAN import emulate_21cmGEM, emulate_ARES, emulate_foreground, evaluate
 # from Global21cmKAN import emulate_yourmodel
