@@ -42,7 +42,7 @@ frequencies = np.linspace(6,50,176)
 vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
 z_list = [(vr/x)-1 for x in frequencies] # list of redshifts for spectra in your model
 # Load in unnormalized training, validation, and test data made by your model as numpy arrays; UNCOMMENT
-with h5py.File(PATH + 'bw_training_set_500k_split', "r") as f:
+with h5py.File(PATH + 'bw_training_set_500k_split.h5', "r") as f:
     print("Keys: %s" % f.keys())
     par_train = np.asarray(f['par_train'])[()]
     par_val = np.asarray(f['par_val'])[()]
