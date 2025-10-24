@@ -39,8 +39,9 @@ train_mins_foreground_beam = np.load(PATH+"models/train_mins_foreground_beam.npy
 train_maxs_foreground_beam = np.load(PATH+"models/train_maxs_foreground_beam.npy")
 
 frequencies = np.linspace(6,50,176)
-vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
-z_list = np.array([(vr/x)-1 for x in frequencies]) # list of redshifts for spectra in your model
+#vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
+#z_list = np.array([(vr/x)-1 for x in frequencies]) # list of redshifts for spectra in your model
+z_list = np.linspace(27.40811504, 235.73429196, 176)
 # Load in unnormalized training, validation, and test data made by your model as numpy arrays; UNCOMMENT
 with h5py.File(PATH + 'bw_training_set_500k_split.h5', "r") as f:
     print("Keys: %s" % f.keys())
@@ -87,11 +88,9 @@ par_val = 0
 # train_maxs_foreground_beam[-1] is the absolute maximum dT_b value in the training set, used for normalization
 proc_spectra_train = spectra_train.copy()
 proc_spectra_train = (spectra_train - train_mins_foreground_beam[-1])/(train_maxs_foreground_beam[-1]-train_mins_foreground_beam[-1])  # global Min-Max normalization
-#proc_spectra_train = proc_spectra_train[:,::-1] # flip spectra to be from high-z to low-z
 y_train_foreground_beam = proc_spectra_train.copy() # define your normalized training set spectra
 proc_spectra_val = spectra_val.copy()
 proc_spectra_val = (spectra_val - train_mins_foreground_beam[-1])/(train_maxs_foreground_beam[-1]-train_mins_foreground_beam[-1])
-#proc_spectra_val = proc_spectra_val[:,::-1]
 y_val_foreground_beam = torch.from_numpy(proc_spectra_val.copy()) # define your normalized validation set spectra
 y_val_foreground_beam = y_val_foreground_beam.to(device)
 proc_spectra_train = 0
