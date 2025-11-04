@@ -144,3 +144,51 @@ class evaluate_on_ARES():
             return unproc_signals[0,:]
         else:
             return unproc_signals
+
+
+# class to evaluate 21cmKAN trained on beam-weighted foreground spectra
+class evaluate_on_foreground(): 
+    def __init__(self, **kwargs):
+        for key, values in kwargs.items():
+            if key not in set(['model_path', 'model']):
+                raise KeyError("Unexpected keyword argument in evaluate()")
+
+        # Default model path
+        default_model_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/emulator_foreground_beam.pth"
+        model_path = kwargs.pop('model_path', default_model_path)
+                
+        # Load normalization data from the same directory as the model
+        model_dir = os.path.dirname(model_path) + '/'
+        self.train_mins = np.load(model_dir + 'train_mins_foreground_beam.npy')
+        self.train_maxs = np.load(model_dir + 'train_maxs_foreground_beam.npy')
+
+        self.model = kwargs.pop('model', None)
+        if self.model is None:
+            self.model = torch.load(model_path, weights_only=False)
+            self.model.to(device)
+    def __call__(self, parameters):
+        if len(np.shape(parameters)) == 1:
+            parameters = np.expand_dims(parameters, axis=0) # if doing one signal at a time
+
+        N_proc = np.shape(parameters)[0] # number of signals (i.e., parameter sets) to process
+        p = np.shape(parameters)[1] # number of input parameters (# of physical params)
+        proc_params = np.zeros((N_proc,p))
+        
+        for i in range(p):
+            x = parameters[:,i]
+            proc_params[:,i] = (x-self.train_mins[i])/(self.train_maxs[i]-self.train_mins[i])
+        proc_params_input = torch.from_numpy(proc_params)
+        proc_params = 0
+        parameters = 0
+        proc_params_input = proc_params_input.to(device)
+
+        self.model.eval()
+        with torch.no_grad():
+            result = self.model(proc_params_input) # evaluate trained instance of 21cmKAN with processed parameters
+        result = result.cpu().detach().numpy()
+        unproc_signals = result.copy()
+        unproc_signals = (result*(self.train_maxs[-1]-self.train_mins[-1]))+self.train_mins[-1] # unpreprocess (i.e., denormalize) signals
+        if unproc_signals.shape[0] == 1:
+            return unproc_signals[0,:]
+        else:
+            return unproc_signals
