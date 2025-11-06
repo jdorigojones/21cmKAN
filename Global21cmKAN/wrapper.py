@@ -22,7 +22,7 @@ except:
 PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
 model_save_path_21cmGEM = PATH+"models/emulator_21cmGEM.pth"
 model_save_path_ARES = PATH+"models/emulator_ARES.pth"
-model_save_path_foreground = PATH+"models/emulator_foreground_beam.pth"
+model_save_path_foreground = PATH+"models/emulator_foreground_beam_meansub.pth"
 
 class predict_21cmGEM(LoadableModel):
 	def __init__(self, parameters, model_path=model_save_path_21cmGEM):
@@ -113,7 +113,7 @@ class predict_foreground(LoadableModel):
     			list of parameters to accept as input
        		model_path : str
 	 		The path to the saved 21cmKAN model instance
-    			Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_foreground_beam.pth"
+    			Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_foreground_beam_meansub.pth"
        		'''
 		self.parameters = parameters
 		self.model_path = model_path
