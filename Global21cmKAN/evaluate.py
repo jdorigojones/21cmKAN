@@ -154,13 +154,13 @@ class evaluate_on_foreground():
                 raise KeyError("Unexpected keyword argument in evaluate()")
 
         # Default model path
-        default_model_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/emulator_foreground_beam.pth"
+        default_model_path = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/models/emulator_foreground_beam_meansub.pth"
         model_path = kwargs.pop('model_path', default_model_path)
                 
         # Load normalization data from the same directory as the model
         model_dir = os.path.dirname(model_path) + '/'
-        self.train_mins = np.load(model_dir + 'train_mins_foreground_beam.npy')
-        self.train_maxs = np.load(model_dir + 'train_maxs_foreground_beam.npy')
+        self.train_mins = np.load(model_dir + 'train_mins_foreground_beam_meansub.npy')
+        self.train_maxs = np.load(model_dir + 'train_maxs_foreground_beam_meansub.npy')
 
         self.model = kwargs.pop('model', None)
         if self.model is None:
