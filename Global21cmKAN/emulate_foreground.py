@@ -34,16 +34,16 @@ print(f"training batch size: {batch_size}")
 # define path containing saved trained 21cmKAN networks and min/max training set values used for preprocessing
 #PATH = f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"
 PATH = '/projects/jodo2960/beam_weighted_foreground/'
-model_save_path = PATH+"models/emulator_foreground_beam.pth"
-train_mins_foreground_beam = np.load(PATH+"models/train_mins_foreground_beam.npy")
-train_maxs_foreground_beam = np.load(PATH+"models/train_maxs_foreground_beam.npy")
+model_save_path = PATH+"models/emulator_foreground_beam_meansub.pth"
+train_mins_foreground_beam = np.load(PATH+"models/train_mins_foreground_beam_meansub.npy")
+train_maxs_foreground_beam = np.load(PATH+"models/train_maxs_foreground_beam_meansub.npy")
 
 frequencies = np.linspace(6,50,176)
 vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
 #z_list = np.array([(vr/x)-1 for x in frequencies]) # list of redshifts for spectra in your model
 z_list = np.linspace(27.40811504, 235.73429196, 176)
 # Load in unnormalized training, validation, and test data made by your model as numpy arrays; UNCOMMENT
-with h5py.File(PATH + 'bw_training_set_500k_split.h5', "r") as f:
+with h5py.File(PATH + 'bw_training_set_500k_split_meansub.h5', "r") as f:
     print("Keys: %s" % f.keys())
     par_train = np.asarray(f['par_train'])[()]
     par_val = np.asarray(f['par_val'])[()]
@@ -293,10 +293,10 @@ class Emulate:
         self.spectra_val = spectra_val
         self.spectra_test = spectra_test
 
-        self.par_labels = [r'A_1', r'$\beta_1$', r'$\gamma_1$', r'A_2', r'$\beta_2$', r'$\gamma_2$', r'A_3', r'$\beta_3$', r'$\gamma_3$',\
-		r'A_4', r'$\beta_4$', r'$\gamma_4$', r'A_5', r'$\beta_5$', r'$\gamma_5$', r'L', r'$\epsilon_{top}$', r'$\epsilon_{bottom}$'] # fill with your parameter labels
+        self.par_labels = [r'$A_1$', r'$\beta_1$', r'$\gamma_1$', r'$A_2$', r'$\beta_2$', r'$\gamma_2$', r'$A_3$', r'$\beta_3$', r'$\gamma_3$',\
+		r'$A_4$', r'$\beta_4$', r'$\gamma_4$', r'$A_5$', r'$\beta_5$', r'$\gamma_5$', r'L', r'$\epsilon_{top}$', r'$\epsilon_{bottom}$'] # fill with your parameter labels
 
-        self.emulator = model(layer_nodes, grid_size, spline_order, name="emulator_foreground_beam")
+        self.emulator = model(layer_nodes, grid_size, spline_order, name="emulator_foreground_beam_meansub")
 
         self.train_mins = train_mins_foreground_beam
         self.train_maxs = train_maxs_foreground_beam
@@ -317,7 +317,7 @@ class Emulate:
         ----------
         model_path : str
             The path to the saved model instance
-            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_foreground_beam.pth"
+            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_foreground_beam_meansub.pth"
 
         Raises
         ------
@@ -345,7 +345,7 @@ class Emulate:
             Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch. Default : 2
         model_path : str
             The path to the saved model instance
-            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_foreground_beam.pth"
+            Default: f"{os.environ.get('AUX_DIR', os.environ.get('HOME'))}/.Global21cmKAN/"+"models/emulator_foreground_beam_meansub.pth"
 
         Returns
         -------
