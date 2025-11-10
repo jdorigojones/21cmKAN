@@ -41,7 +41,8 @@ train_maxs_foreground_beam = np.load(PATH+"models/train_maxs_foreground_beam_mea
 frequencies = np.linspace(6,50,176)
 vr = 1420.4057517667  # rest frequency of 21 cm line in MHz
 #z_list = np.array([(vr/x)-1 for x in frequencies]) # list of redshifts for spectra in your model
-z_list = np.linspace(27.40811504, 235.73429196, 176)
+z_list = (vr/frequencies) - 1
+#z_list = np.linspace(27.40811504, 235.73429196, 176)
 # Load in unnormalized training, validation, and test data made by your model as numpy arrays; UNCOMMENT
 with h5py.File(PATH + 'bw_training_set_500k_split_meansub.h5', "r") as f:
     print("Keys: %s" % f.keys())
@@ -217,7 +218,7 @@ def error(true_spectrum, emulated_spectrum, relative=True, nu=None, nu_low=None,
 
     err = np.sqrt(np.mean((emulated_spectrum - true_spectrum)**2, axis=1))
     if relative:  # return the rms error as a fraction of the spectrum amplitude in the chosen frequency band
-        err /= true_spectrum[:,0]
+        err /= np.abs(true_spectrum[:,0])
         err *= 100 # convert to per cent (%)
     return err
 
